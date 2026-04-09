@@ -1,0 +1,22 @@
+<h1>${message}</h1>
+
+<div class="player">
+  <div class="input-row">
+    <label>
+      Local audio file path:
+      <input value.bind="filePath" placeholder="e.g. C:\Music\track.mp3" />
+    </label>
+    <!-- Later, you can replace this with a Tauri open-file dialog -->
+  </div>
+
+  <div class="buttons">
+    <button click.trigger="play()">Play</button>
+    <button click.trigger="pause()" disabled.bind="!hasFile || !isPlaying">Pause</button>
+    <button click.trigger="resume()" disabled.bind="!hasFile || !isPaused">Resume</button>
+    <button click.trigger="stop()" disabled.bind="!hasFile">Stop</button>
+  </div>
+
+  <div if.bind="errorMessage" class="error">
+    ${errorMessage}
+  </div>
+</div>

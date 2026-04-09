@@ -1,0 +1,63 @@
+[package]
+name = "app"
+version = "0.1.0"
+description = "A Tauri App"
+authors = ["you"]
+license = ""
+repository = ""
+default-run = "app"
+edition = "2021"
+rust-version = "1.77.2"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[features]
+# by default Tauri runs in production mode
+# when `tauri dev` runs it is executed with `cargo run --no-default-features` if `devPath` is an URL
+# default = [ "custom-protocol" ]
+# this feature is used for production builds where `devPath` points to the filesystem
+# DO NOT remove this
+# custom-protocol = [ "tauri/custom-protocol" ]
+
+[build-dependencies]
+tauri-build = { version = "2.5.3", features = [] }
+
+[dependencies]
+tauri = { version = "2.9.5", features = ["protocol-asset"] }
+tauri-plugin = { version = "2.5.3" }
+tauri-plugin-opener = "2"
+tauri-plugin-shell = "2.0.0"
+
+# Serde
+serde_json = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+
+# Async and concurrency
+tokio = { version = "1.49.0", features = ["full"] }
+rayon = "1.10.0"
+async-trait = "0.1.89"
+futures = "0.3.32"
+
+# Specta
+thiserror = "2.0.18"
+souchy-tauri-specta = { version ="2.0.1", features = ["derive", "javascript", "typescript"] }
+souchy-tauri-specta-macros = { version = "=2.0.1" }
+specta = { version = "=2.0.0-rc.22", features = ["function", "chrono"]  }
+specta-typescript = { version = "0.0.9" }
+specta-jsdoc = { version = "0.0.9" }
+hyperpolyglot = "0.1.7"
+
+# Cache
+sqlx = { version = "0.8.6", features = ["runtime-tokio-rustls", "json", "macros", "sqlite", "chrono"] }
+# sea-orm = { version = "2.0.0-rc", features = [ "sqlx-sqlite", "runtime-tokio-rustls", "macros", "with-json", "with-chrono" ] }
+souchy-sqlx-crud = { version = "0.1.0", features = ["runtime-tokio", "tls-rustls"] }
+
+# Audio-related
+rodio = { version = "0.22.2", features = ["symphonia-all", "playback"] }
+symphonia = { version = "0.5.5", features = ["all"] }
+
+# Utilities
+anyhow = "1"
+once_cell = "1.19"
+parking_lot = "0.12"
+dotenv = "0.15.0"
