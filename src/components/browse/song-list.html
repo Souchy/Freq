@@ -1,0 +1,7 @@
+<template>
+  <ul class="song-list">
+    <li repeat.for="item of filtered()">
+      <song-item item.bind="item" play.bind="play"></song-item>
+    </li>
+  </ul>
+</template>

@@ -1,5 +1,6 @@
 import { route } from '@aurelia/router';
 import { PlayerPage } from './pages/player-page/player-page';
+import { BrowsePage } from './pages/browse-page/browse-page';
 import { SettingsPage } from './pages/settings-page/settings-page';
 
 @route({
@@ -8,6 +9,11 @@ import { SettingsPage } from './pages/settings-page/settings-page';
       path: ['', 'player'],
       component: PlayerPage,
       title: 'Player',
+    },
+    {
+      path: 'browse',
+      component: BrowsePage,
+      title: 'Browse',
     },
     {
       path: 'settings',
