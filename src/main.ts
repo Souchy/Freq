@@ -2,8 +2,6 @@ import Aurelia from 'aurelia';
 import { RouterConfiguration } from '@aurelia/router';
 import { MyApp } from './my-app';
 import './core/player-controller';
-import { WelcomePage } from './pages/welcome-page/welcome-page';
-import { AboutPage } from './pages/about-page/about-page';
 import { PlayerPage } from './pages/player-page/player-page';
 import { SettingsPage } from './pages/settings-page/settings-page';
 import { Controls } from './components/controls/controls';
@@ -42,7 +40,7 @@ async function startApp() {
     basePath: '/',
   }));
 
-  au.register(WelcomePage, AboutPage, PlayerPage, SettingsPage);
+  au.register(PlayerPage, SettingsPage);
   au.register(Controls, Library, NowPlaying, Player, Queue);
 
   await au.app(MyApp).start();

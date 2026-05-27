@@ -37,5 +37,3 @@ export const LongMessage = {
     message: 'Welcome to this comprehensive demonstration of Aurelia 2 components in Storybook!'
   }
 };
-
- 
