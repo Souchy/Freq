@@ -1,0 +1,18 @@
+<template>
+  <require from="./library.css"></require>
+  <div class="library card">
+    <div class="search">
+      <input placeholder="Filter library" value.bind="filter" input.trigger="onFilter($event)" />
+    </div>
+    <ul>
+      <li repeat.for="item of items | filter:filterTrack">
+        <div class="row">
+          <div class="name">${item.name}</div>
+          <div class="actions">
+            <button click.trigger="addToQueue(item)">＋</button>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</template>

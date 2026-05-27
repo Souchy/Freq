@@ -1,0 +1,3 @@
+.queue ul{list-style:none;margin:0;padding:0}
+.queue li{padding:8px;border-bottom:1px solid rgba(255,255,255,0.02);display:flex;justify-content:space-between;align-items:center}
+.queue button{background:transparent;border:1px solid rgba(255,255,255,0.03);padding:4px;border-radius:6px}

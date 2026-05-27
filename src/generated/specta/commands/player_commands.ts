@@ -6,7 +6,7 @@ import {
   Channel as TAURI_CHANNEL,
 } from "@tauri-apps/api/core";
 import { Result } from '../globals';
-import {  } from '../types';
+import { TrackMetadata } from '../types';
 
 export namespace player_commands {
 	export async function loadAndPlayFile(path: string) : Promise<Result<null, string>> {
@@ -36,6 +36,54 @@ export namespace player_commands {
 	export async function stop() : Promise<Result<null, string>> {
 	    try {
 	        return { status: "ok", data: await TAURI_INVOKE("stop") };
+	    } catch (e) {
+	        if(e instanceof Error) throw e;
+	        else return { status: "error", error: e  as any };
+	    }
+	}
+	export async function setVolume(volume: number) : Promise<Result<null, string>> {
+	    try {
+	        return { status: "ok", data: await TAURI_INVOKE("set_volume", { volume }) };
+	    } catch (e) {
+	        if(e instanceof Error) throw e;
+	        else return { status: "error", error: e  as any };
+	    }
+	}
+	export async function scanFolder(path: string) : Promise<Result<string[], string>> {
+	    try {
+	        return { status: "ok", data: await TAURI_INVOKE("scan_folder", { path }) };
+	    } catch (e) {
+	        if(e instanceof Error) throw e;
+	        else return { status: "error", error: e  as any };
+	    }
+	}
+	export async function getMetadata(path: string) : Promise<Result<TrackMetadata, string>> {
+	    try {
+	        return { status: "ok", data: await TAURI_INVOKE("get_metadata", { path }) };
+	    } catch (e) {
+	        if(e instanceof Error) throw e;
+	        else return { status: "error", error: e  as any };
+	    }
+	}
+	export async function seek(positionSeconds: number) : Promise<Result<null, string>> {
+	    try {
+	        return { status: "ok", data: await TAURI_INVOKE("seek", { positionSeconds }) };
+	    } catch (e) {
+	        if(e instanceof Error) throw e;
+	        else return { status: "error", error: e  as any };
+	    }
+	}
+	export async function getPosition() : Promise<Result<number, string>> {
+	    try {
+	        return { status: "ok", data: await TAURI_INVOKE("get_position") };
+	    } catch (e) {
+	        if(e instanceof Error) throw e;
+	        else return { status: "error", error: e  as any };
+	    }
+	}
+	export async function getDuration() : Promise<Result<number, string>> {
+	    try {
+	        return { status: "ok", data: await TAURI_INVOKE("get_duration") };
 	    } catch (e) {
 	        if(e instanceof Error) throw e;
 	        else return { status: "error", error: e  as any };

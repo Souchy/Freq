@@ -1,0 +1,14 @@
+<template>
+  <require from="./controls.css"></require>
+  <div class="controls card">
+    <div class="left">
+      <button click.trigger="prev()">⟸</button>
+    </div>
+    <div class="center">
+      <button class="big" click.trigger="togglePlay()">${isPlaying ? '⏸' : '⏵'}</button>
+    </div>
+    <div class="right">
+      <button click.trigger="next()">⟹</button>
+    </div>
+  </div>
+</template>

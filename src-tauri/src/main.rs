@@ -37,6 +37,12 @@ fn build_specta() -> souchy_tauri_specta::Builder {
             player_commands::pause,
             player_commands::resume,
             player_commands::stop,
+            player_commands::set_volume,
+            player_commands::scan_folder,
+            player_commands::get_metadata,
+            player_commands::seek,
+            player_commands::get_position,
+            player_commands::get_duration,
         ]);
 
     specta_builder

@@ -1,0 +1,18 @@
+.now-playing{
+  display:flex;
+  gap:12px;
+  align-items:center;
+}
+.now-playing .artwork img{
+  width:160px;
+  height:160px;
+  object-fit:cover;
+  border-radius:8px;
+  border:1px solid rgba(255,255,255,0.04);
+}
+.now-playing .meta{flex:1}
+.now-playing .title{font-size:1.2rem;font-weight:700}
+.now-playing .artist{color:var(--muted);margin-bottom:8px}
+.now-playing .progress{display:flex;align-items:center;gap:8px}
+.now-playing .progress input[type=range]{flex:1}
+.now-playing .time{font-size:0.9rem;color:var(--muted)}

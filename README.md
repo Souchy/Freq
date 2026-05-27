@@ -1,3 +1,25 @@
+# Freq — Music Player
+
+This repository contains a Tauri + Aurelia 2 music player app for Windows and Android.
+
+Quick start (development):
+
+```bash
+npm install
+npm run dev       # start vite dev server
+npm run app       # start tauri dev (desktop)
+```
+
+Build for production:
+
+```bash
+npm run build
+npx tauri build
+```
+
+Notes:
+- Use the Settings page to scan folders and populate the playlist.
+- Use the Player page to control playback, volume, and view the playlist.
 # freq
 
 This project is bootstrapped by [aurelia/new](https://github.com/aurelia/new).

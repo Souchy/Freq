@@ -1,6 +1,15 @@
-<nav>
-  <a href="welcome">Welcome</a>
-  <a href="about">About</a>
+<require from="./my-app.scss"></require>
+
+<nav class="app-nav">
+  <div class="brand">Freq</div>
+  <div class="links">
+    <a href="welcome">Welcome</a>
+    <a href="player">Player</a>
+    <a href="settings">Settings</a>
+    <a href="about">About</a>
+  </div>
 </nav>
 
-<au-viewport></au-viewport>
+<main class="app-main">
+  <au-viewport></au-viewport>
+</main>

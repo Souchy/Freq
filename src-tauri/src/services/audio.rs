@@ -11,6 +11,7 @@ pub struct AudioManagerInner {
     handle: MixerDeviceSink,
     current_player: Option<rodio::Player>,
     next_player: Option<rodio::Player>,
+    volume: f32,
 }
 
 pub struct AudioManager {
@@ -26,6 +27,7 @@ impl AudioManager {
             handle,
             current_player: None,
             next_player: None,
+            volume: 1.0,
         };
 
         println!("AudioManager initialized successfully");
@@ -54,7 +56,9 @@ impl AudioManager {
         println!("Decoded audio file successfully");
         player.append(source);
         player.play();
-        player.set_volume(1.0);
+        // apply saved volume
+        let vol = inner.volume;
+        player.set_volume(vol);
         println!("Started playback");
 
         inner.current_player = Some(player);
@@ -88,6 +92,15 @@ impl AudioManager {
             player.stop();
         }
         inner.current_player = None;
+        Ok(())
+    }
+
+    pub fn set_volume(&self, volume: f32) -> Result<(), String> {
+        let mut inner = self.inner.lock();
+        inner.volume = volume;
+        if let Some(ref player) = inner.current_player {
+            player.set_volume(volume);
+        }
         Ok(())
     }
 }
