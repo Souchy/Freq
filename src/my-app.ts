@@ -1,15 +1,17 @@
 import { route } from '@aurelia/router';
+import { WelcomePage } from './pages/welcome-page/welcome-page';
+import { AboutPage } from './pages/about-page/about-page';
 
 @route({
   routes: [
     {
       path: ['', 'welcome'],
-      component: import('./welcome-page'),
+      component: WelcomePage,
       title: 'Welcome',
     },
     {
       path: 'about',
-      component: import('./about-page'),
+      component: AboutPage,
       title: 'About',
     },
   ],
