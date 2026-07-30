@@ -12,6 +12,11 @@ import { route } from '@aurelia/router';
       component: import('./about-page'),
       title: 'About',
     },
+    {
+      path: 'downloader',
+      component: import('./pages/download-page/DownloadPage'),
+      title: 'Downloader',
+    },
   ],
 })
 export class MyApp {

@@ -2,14 +2,17 @@
 //     all(not(debug_assertions), target_os = "windows"),
 //     windows_subsystem = "windows"
 // )]
-#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
-
-mod commands;
-mod services;
-
+// #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 use commands::player_commands;
 use souchy_tauri_specta::Builder;
 use specta_typescript::Typescript;
+use std::{path::PathBuf, process::Command, str::FromStr};
+use tauri::Manager;
+use yt_dlp::client::Libraries;
+use yt_dlp::Downloader;
+
+mod commands;
+mod services;
 
 fn main() {
     dotenv::dotenv().ok();
@@ -20,10 +23,35 @@ fn main() {
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(specta_builder.invoke_handler())
-        .setup(move |app| {
+        .setup(move |app: &mut tauri::App| {
             // Setup specta and generate bindings
             specta_builder.mount_events(app);
             generate_bindings(specta_builder);
+
+            // 1. Get an absolute, safe path (e.g., App Data Directory)
+            let app_dir = app.path().app_local_data_dir()?;
+            // .map_err(|e| tauri::Error::Runtime(e.into()))?;
+
+            // let yt_dlp_bin_dir = app_dir.join("libs/yt-dlp");
+            // let ffmpeg_bin_dir = app_dir.join("libs/ffmpeg");
+            let cache_output_dir = app_dir.join("cache_output");
+            let libs_dir = app_dir.join("libs");
+
+            std::fs::create_dir_all(&libs_dir)?;
+            std::fs::create_dir_all(&cache_output_dir)?;
+
+            // let libraries = Libraries::new(yt_dlp_bin_dir, ffmpeg_bin_dir);
+            let downloader = tauri::async_runtime::block_on(async {
+                // Downloader::builder(libraries, cache_output_dir)
+                //     .build()
+                //     .await
+                Downloader::with_new_binaries(libs_dir, cache_output_dir)
+                    .await?
+                    .build()
+                    .await
+            })?;
+            app.manage(downloader);
+
             Ok(())
         })
         .run(tauri::generate_context!())
@@ -37,6 +65,9 @@ fn build_specta() -> souchy_tauri_specta::Builder {
             player_commands::pause,
             player_commands::resume,
             player_commands::stop,
+            commands::yt::dl_yt,
+            commands::yt::yt_search,
+            commands::yt::get_video_recommendations
         ]);
 
     specta_builder

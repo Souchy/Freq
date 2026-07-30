@@ -1,4 +1,8 @@
 .env
+target/
+output/
+src/generated/
+
 
 # You may want to customise this file depending on your Operating System
 # and the editor that you use.

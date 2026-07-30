@@ -1,0 +1,9 @@
+{
+	"rust-analyzer.restartServerOnConfigChange": true,
+	"rust-analyzer.linkedProjects": [
+		"src-tauri\\Cargo.toml"
+	],
+	"rust-analyzer.cargo.runBuildScripts": true,
+	"rust-analyzer.cargo.loadOutDirsFromCheck": true,
+	"rust-analyzer.cargo.features": "all"
+}

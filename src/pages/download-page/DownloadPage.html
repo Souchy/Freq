@@ -1,0 +1,22 @@
+<input value.bind="urlInput" placeholder="Download url..." disabled.bind="isLoading" />
+<button click.trigger="clickDownload(urlInput)">Download</button>
+
+<input value.bind="searchInput" placeholder="Search youtube..." />
+<button click.trigger="clickSearch(searchInput)" disabled.bind="isLoading">Search</button>
+
+<p>${message}</p>
+
+<yt-video repeat.for="video of playlist" video.bind="video" vm.bind="this"></yt-video>
+
+<template as-custom-element="yt-video">
+  <bindable name="video"></bindable>
+  <bindable name="vm"></bindable>
+  <div>
+    ${video.title}
+    ${video.duration}s
+    <button if.bind="!vm.downloaded[video.url]" click.trigger="vm.clickDownload(video.url)">Download</button>
+    <span if.bind="vm.downloaded[video.url] && !!vm.downloaded[video.url].promise">Loading</span>
+    <span if.bind="vm.downloaded[video.url] && vm.downloaded[video.url].promise == null && vm.downloaded[video.url].downloaded">Download succeeded</span>
+    <span if.bind="vm.downloaded[video.url] && vm.downloaded[video.url].promise == null && !vm.downloaded[video.url].downloaded">Download failed</span>
+  </div>
+</template>
