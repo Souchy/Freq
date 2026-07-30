@@ -51,13 +51,13 @@ export class DownloadPage {
 
 	public async clickSearch(search: string) {
 		this.playlist = [];
-		let result = await commands_yt.ytSearch(search, 0, 20);
+		let result = await commands_yt.ytSearch(search, 0, 100);
 
 		this.logger.debug("Dl result: ", result);
 		if (result.status == "error") {
 			this.message = "Error: " + result.error;
 		} else {
-			this.message = "Succeeded: " + result.data;
+			this.message = ""; // this.message = "Succeeded: " + result.data.length;
 			this.playlist = result.data;
 		}
 	}

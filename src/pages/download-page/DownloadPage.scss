@@ -1,4 +1,43 @@
 download-page {
 	margin: 2rem;
-	
+
+	yt-video {
+		display: flex;
+		flex-direction: horizontal;
+		gap: 0.5rem;
+
+		.thumbnail_with_duration {
+			position: relative;
+
+			.thumbnail {
+				width: 164px;
+				// height: 128px;
+				border-radius: 0.5rem;
+			}
+
+			.duration {
+				position: absolute;
+				right: 0.5rem;
+				bottom: 0.5rem;
+				background: rgba(0, 0, 0, 0.5);
+				border-radius: 0.5rem;
+				color: white;
+				padding: 0.2rem 0.4rem;
+			}
+		}
+
+		.info {
+			display: flex;
+			flex-direction: column;
+			gap: 0.1rem;
+		}
+
+		.title {
+			font-weight: bold;
+		}
+
+		.uploader {}
+
+	}
+
 }

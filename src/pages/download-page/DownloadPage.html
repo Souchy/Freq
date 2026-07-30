@@ -6,17 +6,25 @@
 
 <p>${message}</p>
 
-<yt-video repeat.for="video of playlist" video.bind="video" vm.bind="this"></yt-video>
+<yt-video repeat.for="video of playlist" video.bind="video" vm.bind="this" if.bind="video.duration"></yt-video>
 
 <template as-custom-element="yt-video">
   <bindable name="video"></bindable>
   <bindable name="vm"></bindable>
-  <div>
-    ${video.title}
-    ${video.duration}s
-    <button if.bind="!vm.downloaded[video.url]" click.trigger="vm.clickDownload(video.url)">Download</button>
-    <span if.bind="vm.downloaded[video.url] && !!vm.downloaded[video.url].promise">Loading</span>
-    <span if.bind="vm.downloaded[video.url] && vm.downloaded[video.url].promise == null && vm.downloaded[video.url].downloaded">Download succeeded</span>
-    <span if.bind="vm.downloaded[video.url] && vm.downloaded[video.url].promise == null && !vm.downloaded[video.url].downloaded">Download failed</span>
+  <!-- <img src.bind="video.thumbnail_url" /> -->
+  <div class="thumbnail_with_duration">
+    <img class="thumbnail" src="http://img.youtube.com/vi/${video.id}/maxresdefault.jpg" />
+    <div class="duration">${video.duration}s</div>
   </div>
+  <div class="info">
+    <div class="title">${video.title}</div>
+    <div class="uploader">${video.uploader}</div>
+    <div>
+      <button if.bind="!vm.downloaded[video.url]" click.trigger="vm.clickDownload(video.url)">Download</button>
+      <span if.bind="vm.downloaded[video.url] && !!vm.downloaded[video.url].promise">Loading</span>
+      <span if.bind="vm.downloaded[video.url] && vm.downloaded[video.url].promise == null && vm.downloaded[video.url].downloaded">Download succeeded</span>
+      <span if.bind="vm.downloaded[video.url] && vm.downloaded[video.url].promise == null && !vm.downloaded[video.url].downloaded">Download failed</span>
+    </div>
+  </div>
+  <!-- <iframe width="128" height="128" src.bind="video.url"></iframe> -->
 </template>
