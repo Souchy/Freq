@@ -3,4 +3,5 @@
 
 import { __makeEvents__ } from './globals';
 import { DlOptions, SearchResultVideo } from './types';
+import { TrackMetadata } from './types';
 

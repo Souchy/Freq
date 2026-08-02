@@ -1,0 +1,13 @@
+<template>
+  <div class="filter-bar">
+    <input placeholder="Search songs" value.bind="search" />
+    <select value.bind="group">
+      <option value="none">All</option>
+      <option value="folder">Folder</option>
+      <option value="artist">Artist</option>
+      <option value="album">Album</option>
+      <option value="genre">Genre</option>
+    </select>
+    <button click.trigger="scanClicked()">Scan Folder</button>
+  </div>
+</template>

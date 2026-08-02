@@ -11,3 +11,4 @@ uploader: string | null;
  * The channel ID.
  */
 channel_id: string | null }
+export type TrackMetadata = { title: string | null; artist: string | null; album: string | null; duration_seconds: number | null }

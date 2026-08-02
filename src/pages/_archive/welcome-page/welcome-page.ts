@@ -1,5 +1,5 @@
 import { bindable, ILogger, resolve } from "aurelia";
-import { player_commands } from "./generated/specta/commands/player_commands";
+import { player_commands } from "../../generated/specta/commands/player_commands";
 
 export class WelcomePage {
   public readonly logger = resolve(ILogger).scopeTo("WelcomePage");

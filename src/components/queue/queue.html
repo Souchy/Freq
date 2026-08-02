@@ -1,0 +1,9 @@
+<template>
+  <require from="./queue.css"></require>
+  <div class="queue card">
+    <h3>Queue</h3>
+    <ul>
+      <li repeat.for="item of items">${item.name} <button click.trigger="remove(item)">✕</button></li>
+    </ul>
+  </div>
+</template>

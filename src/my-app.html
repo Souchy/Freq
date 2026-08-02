@@ -1,7 +1,15 @@
-<nav>
-  <a href="welcome">Player</a>
-  <a href="downloader">Downloader</a>
-  <a href="about">About</a>
+<require from="./my-app.scss"></require>
+
+<nav class="app-nav">
+  <div class="brand">Freq</div>
+  <div class="links">
+    <a href="player">Player</a>
+    <a href="browse">Browse</a>
+    <a href="downloader">Downloader</a>
+    <a href="settings">Settings</a>
+  </div>
 </nav>
 
-<au-viewport></au-viewport>
+<main class="app-main">
+  <au-viewport></au-viewport>
+</main>

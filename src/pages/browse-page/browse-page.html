@@ -1,0 +1,9 @@
+<require from="../../components/browse/filter-bar"></require>
+<require from="../../components/browse/song-list"></require>
+
+<div class="browse-page">
+  <h2>Songs</h2>
+  <filter-bar search.bind="search" group.bind="group" on-scan.bind="scanFolder"></filter-bar>
+
+  <song-list items.bind="items" search.bind="search" group.bind="group" play.bind="play"></song-list>
+</div>

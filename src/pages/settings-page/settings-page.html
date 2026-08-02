@@ -1,0 +1,13 @@
+<template>
+  <h2>Settings</h2>
+  <div>
+    <label>Scan folder path: <input value.bind="folderPath" /></label>
+    <button click.trigger="scan()">Scan</button>
+  </div>
+  <div>
+    <h3>Last scan results</h3>
+    <ul>
+      <li repeat.for="p of results">${p}</li>
+    </ul>
+  </div>
+</template>
