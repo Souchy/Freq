@@ -6,7 +6,7 @@ import {
   Channel as TAURI_CHANNEL,
 } from "@tauri-apps/api/core";
 import { Result } from '../globals';
-import {  } from '../types';
+import { DlOptions, SearchResultVideo } from '../types';
 
 export namespace player_commands {
 	export async function loadAndPlayFile(path: string) : Promise<Result<null, string>> {
