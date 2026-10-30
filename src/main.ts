@@ -5,6 +5,7 @@ import { I18nConfiguration } from '@aurelia/i18n';
 import Fetch from 'i18next-fetch-backend';
 import { DialogConfigurationStandard } from '@aurelia/dialog';
 import { DefaultVirtualizationConfiguration } from '@aurelia/ui-virtualization';
+import { applyTheme, getTheme } from './core/theme';
 import './core/player-controller';
 import { PlayerPage } from './pages/player-page/player-page';
 import { SettingsPage } from './pages/settings-page/settings-page';
@@ -12,6 +13,7 @@ import { Library } from './components/library/library';
 import { Queue } from './components/queue/queue';
 
 async function startApp() {
+  applyTheme(getTheme());
   const au = new Aurelia();
 
   // Logger for development

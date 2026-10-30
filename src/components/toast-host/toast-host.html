@@ -1,0 +1,17 @@
+<template>
+  <require from="./toast-host.scss"></require>
+
+  <section class="toast-stack" aria-live="polite" aria-label="Notifications">
+    <article repeat.for="toast of toasts" class="toast is-${toast.kind}" role.bind="toast.kind === 'error' ? 'alert' : 'status'" mouseenter.trigger="hold(toast)" mouseleave.trigger="release(toast)" focusin.trigger="hold(toast)" focusout.trigger="release(toast)">
+      <span class="toast-mark" aria-hidden="true">${toast.kind === 'success' ? '✓' : toast.kind === 'error' ? '!' : 'i'}</span>
+      <div class="toast-copy">
+        <strong>${toast.title}</strong>
+        <span if.bind="toast.message" title.bind="toast.message">${toast.message}</span>
+        <div class="toast-actions" if.bind="toast.actions.length">
+          <button repeat.for="action of toast.actions" type="button" click.trigger="runAction(toast, $index)">${action.label}</button>
+        </div>
+      </div>
+      <button class="toast-close" type="button" click.trigger="dismiss(toast)" aria-label="Dismiss notification">×</button>
+    </article>
+  </section>
+</template>

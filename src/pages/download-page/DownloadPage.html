@@ -5,6 +5,15 @@
   </header>
 
   <main class="content">
+    <nav class="page-tabs" role="tablist" aria-label="YouTube views">
+      <button type="button" role="tab" aria-selected.bind="activeTab === 'search'" class="page-tab ${activeTab === 'search' ? 'is-active' : ''}" click.trigger="setTab('search')">Search</button>
+      <button type="button" role="tab" aria-selected.bind="activeTab === 'downloads'" class="page-tab ${activeTab === 'downloads' ? 'is-active' : ''}" click.trigger="setTab('downloads')">
+        Downloads
+        <span class="tab-badge" if.bind="activeCount">${activeCount}</span>
+      </button>
+    </nav>
+
+    <div show.bind="activeTab === 'search'">
     <section class="search-section" aria-labelledby="page-title">
       <p class="eyebrow">YOUTUBE / AUDIO</p>
       <h1 id="page-title">Find your next<br class="mobile-break"> favorite.</h1>
@@ -43,13 +52,57 @@
             <h3 title.bind="video.title">${video.title}</h3>
             <p>${video.uploader || 'YouTube'}<span if.bind="video.duration !== null"> · ${formatDuration(video.duration)}</span></p>
           </div>
-          <button class="download-button" class.bind="downloaded[video.url] === 'downloaded' ? 'download-button is-saved' : 'download-button'" type="button" click.trigger="clickDownload(video.url)" disabled.bind="downloaded[video.url] === 'downloading' || downloaded[video.url] === 'downloaded'">
-            <span if.bind="!downloaded[video.url] || downloaded[video.url] === 'error'">Save MP3</span>
-            <span if.bind="downloaded[video.url] === 'downloading'">Saving</span>
-            <span if.bind="downloaded[video.url] === 'downloaded'">Saved</span>
+          <button class="download-button ${jobsByUrl[video.url].status === 'done' ? 'is-saved' : ''}" type="button" click.trigger="clickDownload(video.url, video)" disabled.bind="jobsByUrl[video.url] && jobsByUrl[video.url].status !== 'error'">
+            <span if.bind="!jobsByUrl[video.url] || jobsByUrl[video.url].status === 'error'">Save MP3</span>
+            <span if.bind="jobsByUrl[video.url].status === 'starting' || jobsByUrl[video.url].status === 'downloading'">${jobsByUrl[video.url].percent != null ? jobsByUrl[video.url].percent.toFixed(0) + '%' : 'Saving'}</span>
+            <span if.bind="jobsByUrl[video.url].status === 'converting'">Converting</span>
+            <span if.bind="jobsByUrl[video.url].status === 'done'">Saved</span>
           </button>
         </article>
       </div>
+    </section>
+    </div>
+
+    <section class="downloads-section" show.bind="activeTab === 'downloads'" aria-labelledby="downloads-title">
+      <div class="results-heading">
+        <h2 id="downloads-title">Downloads</h2>
+        <button class="text-button" type="button" click.trigger="clearFinished()" if.bind="jobs.length > activeCount">Clear finished</button>
+      </div>
+
+      <div class="empty-state" if.bind="!jobs.length">
+        <p>Nothing downloaded yet.</p>
+      </div>
+
+      <ul class="download-list" if.bind="jobs.length">
+        <li repeat.for="job of jobs" class="download-item is-${job.status}">
+          <div class="artwork">
+            <img if.bind="job.thumbnail" src.bind="job.thumbnail" alt="" loading="lazy">
+          </div>
+          <div class="download-copy">
+            <h3 title.bind="job.title">${job.title}</h3>
+
+            <div class="download-progress" if.bind="job.status === 'starting' || job.status === 'downloading' || job.status === 'converting'">
+              <div class="progress-track ${job.status === 'converting' || job.percent == null ? 'is-indeterminate' : ''}" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow.bind="job.percent">
+                <span css="width: ${job.percent ?? 0}%"></span>
+              </div>
+              <p>
+                <span if.bind="job.status === 'starting'">Starting…</span>
+                <span if.bind="job.status === 'downloading'">${job.percent != null ? job.percent.toFixed(0) + '%' : 'Downloading'} ${formatSpeed(job.speedBps) ? '· ' + formatSpeed(job.speedBps) : ''} ${formatEta(job.etaSeconds) ? '· ' + formatEta(job.etaSeconds) : ''}</span>
+                <span if.bind="job.status === 'converting'">Converting to MP3…</span>
+              </p>
+            </div>
+
+            <p class="download-meta" if.bind="job.status === 'done'" title.bind="job.path">Saved ${formatTime(job.finishedAt)} · ${job.path}</p>
+            <p class="download-meta is-error" if.bind="job.status === 'error'" title.bind="job.error">${job.error}</p>
+          </div>
+          <div class="download-actions">
+            <button class="download-button" type="button" if.bind="job.status === 'done'" click.trigger="play(job)">Play</button>
+            <button class="text-button" type="button" if.bind="job.status === 'done'" click.trigger="reveal(job)">Show in folder</button>
+            <button class="download-button" type="button" if.bind="job.status === 'error'" click.trigger="retry(job)">Retry</button>
+            <button class="icon-button" type="button" if.bind="job.status === 'done' || job.status === 'error'" click.trigger="remove(job)" title="Remove from list" aria-label="Remove ${job.title} from the list">×</button>
+          </div>
+        </li>
+      </ul>
     </section>
   </main>
 

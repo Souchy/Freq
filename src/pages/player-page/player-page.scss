@@ -1,12 +1,13 @@
 .player-page {
-	--player-ink: #17241f;
-	--player-muted: #748078;
-	--player-line: #d9ddd1;
-	--player-surface: #fbfbf6;
-	--player-lime: #d8f36a;
-	--player-coral: #e85d45;
+	--player-ink: var(--ink);
+	--player-muted: var(--muted);
+	--player-line: var(--line);
+	--player-surface: var(--surface);
+	--player-lime: var(--lime);
+	--player-coral: var(--coral);
 	width: min(100%, 1120px);
 	width: min(100%, 1280px);
+	height: 100%;
 	margin: 0 auto;
 	color: var(--player-ink);
 	animation: player-arrive 380ms ease-out both;
@@ -67,7 +68,7 @@
 		border: 1px solid var(--player-line);
 		border-radius: 6px;
 		background: var(--player-surface);
-		box-shadow: 0 12px 30px rgb(23 36 31 / 5%);
+		box-shadow: 0 12px 30px var(--shadow-soft);
 	}
 
 	.rail-label {
@@ -108,7 +109,7 @@
 		border: 0;
 		border-radius: 4px;
 		background: var(--player-ink);
-		color: #fff;
+		color: var(--on-ink);
 		font-size: 12px;
 		font-weight: 700;
 		white-space: nowrap;
@@ -122,7 +123,7 @@
 	}
 
 	.scan-button:hover:not(:disabled) {
-		background: #34463c;
+		background: var(--ink-hover);
 	}
 
 	.scan-button:active:not(:disabled) {
@@ -141,14 +142,14 @@
 		border: 1px solid var(--player-line);
 		border-radius: 4px;
 		outline: 0;
-		background: rgb(255 255 255 / 62%);
+		background: var(--field);
 		color: var(--player-ink);
 		font-size: 13px;
 	}
 
 	.library-search input:focus {
-		border-color: #9cb448;
-		box-shadow: 0 0 0 3px rgb(216 243 106 / 36%);
+		border-color: var(--focus);
+		box-shadow: 0 0 0 3px var(--focus-ring);
 	}
 
 	.search-mark {
@@ -161,7 +162,8 @@
 	}
 
 	.track-list {
-		max-height: min(58vh, 590px);
+		flex: 1;
+		min-height: 0;
 		overflow: auto;
 		overscroll-behavior: contain;
 	}
@@ -173,22 +175,22 @@
 	}
 
 	.track-row {
-		min-height: 64px;
+		min-height: 52px;
 		display: grid;
-		grid-template-columns: 34px minmax(0, 1fr) 40px;
+		grid-template-columns: 34px minmax(0, 1fr) auto;
 		align-items: center;
-		gap: 12px;
+		gap: 4px 12px;
 		padding: 8px 4px;
 		border-bottom: 1px solid var(--player-line);
 		transition: background-color 120ms ease;
 	}
 
 	.track-row:hover {
-		background: rgb(216 243 106 / 18%);
+		background: var(--accent-soft);
 	}
 
 	.track-index {
-		color: #89938b;
+		color: var(--player-muted);
 		font-size: 11px;
 		font-variant-numeric: tabular-nums;
 		text-align: center;
@@ -227,8 +229,9 @@
 	}
 
 	.add-track:hover {
-		border-color: var(--player-ink);
+		border-color: var(--player-lime);
 		background: var(--player-lime);
+		color: var(--on-lime);
 	}
 
 	.library-message,
@@ -285,7 +288,7 @@
 		padding: 18px;
 		background-color: var(--player-lime);
 		background-image: repeating-linear-gradient(135deg, transparent 0 16px, rgb(23 36 31 / 7%) 16px 17px);
-		color: var(--player-ink);
+		color: var(--on-lime);
 	}
 
 	.artwork-mark {
@@ -305,7 +308,7 @@
 		width: 8%;
 		min-height: 16%;
 		border-radius: 2px;
-		background: var(--player-ink);
+		background: var(--on-lime);
 	}
 
 	.artwork-bars i:nth-child(2),
@@ -408,7 +411,7 @@
 	}
 
 	.transport button:hover:not(:disabled) {
-		background: #e9ecdf;
+		background: var(--hover);
 	}
 
 	.transport .play-button {
@@ -418,7 +421,7 @@
 
 	.transport .play-button:not(:disabled) {
 		background: var(--player-ink);
-		color: #fff;
+		color: var(--on-ink);
 	}
 
 	.transport .play-button:hover:not(:disabled) {
@@ -504,7 +507,7 @@
 	}
 
 	.queue-remove:hover:not(:disabled) {
-		background: #f4e3de;
+		background: var(--danger-soft);
 		color: var(--player-coral);
 	}
 

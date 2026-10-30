@@ -1,0 +1,140 @@
+.toast-stack {
+	position: fixed;
+	z-index: 40;
+	right: clamp(14px, 4vw, 48px);
+	bottom: calc(var(--dock-clearance) + 4px);
+	width: min(360px, calc(100vw - 28px));
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	pointer-events: none;
+}
+
+.toast {
+	display: grid;
+	grid-template-columns: auto minmax(0, 1fr) auto;
+	align-items: start;
+	gap: 12px;
+	padding: 14px 12px 14px 14px;
+	border: 1px solid var(--line);
+	border-radius: 8px;
+	background: var(--surface);
+	box-shadow: 0 16px 40px var(--shadow);
+	color: var(--ink);
+	font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+	pointer-events: auto;
+	animation: toast-arrive 200ms ease-out both;
+}
+
+.toast-mark {
+	width: 24px;
+	aspect-ratio: 1;
+	display: grid;
+	place-items: center;
+	border-radius: 50%;
+	background: var(--line);
+	color: var(--ink);
+	font-size: 12px;
+	font-weight: 700;
+}
+
+.toast.is-success .toast-mark {
+	background: var(--lime);
+	color: var(--on-lime);
+}
+
+.toast.is-error .toast-mark {
+	background: var(--coral);
+	color: #fff;
+}
+
+.toast-copy {
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+	padding-top: 2px;
+}
+
+.toast-copy strong {
+	font-size: 13px;
+}
+
+.toast-copy span {
+	display: -webkit-box;
+	overflow: hidden;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 2;
+	color: var(--muted);
+	font-size: 12px;
+	line-height: 1.4;
+}
+
+.toast-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	margin-top: 8px;
+}
+
+.toast-actions button {
+	min-height: 28px;
+	padding: 0 10px;
+	border: 1px solid var(--line);
+	border-radius: 4px;
+	background: transparent;
+	color: var(--ink);
+	font: inherit;
+	font-size: 12px;
+	font-weight: 700;
+	cursor: pointer;
+}
+
+.toast-actions button:first-child {
+	border-color: var(--ink);
+	background: var(--ink);
+	color: var(--on-ink);
+}
+
+.toast-actions button:hover {
+	border-color: var(--coral);
+}
+
+.toast-close {
+	width: 26px;
+	aspect-ratio: 1;
+	border: 0;
+	border-radius: 4px;
+	background: transparent;
+	color: var(--muted);
+	font-size: 16px;
+	cursor: pointer;
+}
+
+.toast-close:hover {
+	background: var(--hover);
+	color: var(--ink);
+}
+
+.toast button:focus-visible {
+	outline: 2px solid var(--focus);
+	outline-offset: 2px;
+}
+
+@keyframes toast-arrive {
+	from {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.toast {
+		animation: none;
+	}
+}

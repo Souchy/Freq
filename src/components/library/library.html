@@ -13,20 +13,36 @@
     <label class="library-search">
       <span class="search-mark" aria-hidden="true">⌕</span>
       <span class="visually-hidden">Filter your collection</span>
-      <input type="search" placeholder="Filter by track or file path" value.bind="filter" autocomplete="off">
+      <input type="search" placeholder="Filter your collection" value.bind="filter" autocomplete="off">
     </label>
 
     <p class="library-message" if.bind="message" role="status">${message}</p>
 
     <div class="track-list" if.bind="filteredItems.length">
       <ul>
-        <li class="track-row" repeat.for="item of filteredItems">
-          <span class="track-index">${formatIndex($index)}</span>
+        <li class="track-row ${detailsPath === item.path ? 'is-open' : ''} ${currentPath === item.path ? 'is-current' : ''}" aria-current.bind="currentPath === item.path ? 'true' : null" repeat.for="item of filteredItems">
+          <button class="track-play" type="button" click.trigger="playFrom($index)" title.bind="currentPath === item.path && isPlaying ? 'Pause' : 'Play'" aria-label="${currentPath === item.path && isPlaying ? 'Pause' : 'Play'} ${item.name}">
+            <span class="track-index" if.bind="currentPath !== item.path">${formatIndex($index)}</span>
+            <span class="now-playing-mark ${isPlaying ? 'is-live' : ''}" else aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="track-play-icon" aria-hidden="true">${currentPath === item.path && isPlaying ? 'Ⅱ' : '▶'}</span>
+          </button>
           <div class="track-meta">
             <div class="track-name" title.bind="item.name">${item.name}</div>
-            <div class="track-path" title.bind="item.path">${item.path}</div>
           </div>
-          <button class="add-track" type="button" click.trigger="addToQueue(item)" title="Add to queue" aria-label="Add to queue">+</button>
+          <div class="track-actions">
+            <button class="track-info" type="button" click.trigger="toggleDetails(item)" title="Track details" aria-label="Track details" aria-expanded.bind="detailsPath === item.path">i</button>
+            <button class="add-track" type="button" click.trigger="addToQueue(item)" title="Add to queue" aria-label="Add to queue">+</button>
+          </div>
+          <dl class="track-details" if.bind="detailsPath === item.path" aria-busy.bind="isLoadingDetails">
+            <template repeat.for="row of detailRows">
+              <dt>${row.label}</dt>
+              <dd>${row.value}</dd>
+            </template>
+            <dt>File</dt>
+            <dd title.bind="item.path">${item.path}</dd>
+            <dd class="track-details-note" if.bind="isLoadingDetails">Reading file…</dd>
+            <dd class="track-details-note" if.bind="detailsError" role="alert">${detailsError}</dd>
+          </dl>
         </li>
       </ul>
     </div>

@@ -1,15 +1,23 @@
 <template>
   <section class="queue" aria-labelledby="queue-title">
     <header class="queue-heading">
-      <h2 id="queue-title">Up next</h2>
+      <h2 id="queue-title">Queue</h2>
       <span>${items.length} ${items.length === 1 ? 'track' : 'tracks'}</span>
     </header>
-    <ul>
-      <li repeat.for="item of items">
-        <span class="queue-track-name" title.bind="item.name">${item.name}</span>
-        <button class="queue-remove" type="button" click.trigger="remove(item)" disabled.bind="isPlaying && $index === 0" title="Remove from queue" aria-label="Remove from queue">×</button>
-      </li>
-    </ul>
+    <div class="queue-scroll">
+      <ul ref="listEl">
+        <li repeat.for="item of items" class="${$index === currentIndex && currentPath ? 'is-current' : ''} ${$index < currentIndex ? 'is-played' : ''}" aria-current.bind="$index === currentIndex && currentPath ? 'true' : null">
+          <button class="track-play" type="button" click.trigger="play($index)" title.bind="$index === currentIndex && currentPath && isPlaying ? 'Pause' : 'Play'" aria-label="${$index === currentIndex && currentPath && isPlaying ? 'Pause' : 'Play'} ${item.name}">
+            <span class="track-index" if.bind="!($index === currentIndex && currentPath)">${formatIndex($index)}</span>
+            <span class="now-playing-mark ${isPlaying ? 'is-live' : ''}" else aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="track-play-icon" aria-hidden="true">${$index === currentIndex && currentPath && isPlaying ? 'Ⅱ' : '▶'}</span>
+          </button>
+          <span class="queue-track-name" title.bind="item.name">${item.name}</span>
+          <button class="queue-remove" type="button" click.trigger="remove($index)" disabled.bind="$index === currentIndex && currentPath" title="Remove from queue" aria-label="Remove from queue">×</button>
+        </li>
+      </ul>
+      <span class="queue-scroll-marker" if.bind="markerTop !== null" css="top: ${markerTop}px" aria-hidden="true"></span>
+    </div>
     <p class="queue-empty" if.bind="!items.length">Add a track from your collection.</p>
   </section>
 </template>

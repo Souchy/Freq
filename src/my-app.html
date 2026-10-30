@@ -1,5 +1,6 @@
 <require from="./my-app.scss"></require>
 <require from="./components/player-dock/player-dock"></require>
+<require from="./components/toast-host/toast-host"></require>
 
 <nav class="app-nav" aria-label="Main navigation">
   <div class="brand">freq<span>.</span></div>
@@ -7,6 +8,7 @@
     <a href="library">Library</a>
     <a href="youtube">YouTube</a>
     <a href="settings">Settings</a>
+    <button class="theme-toggle" type="button" click.trigger="toggleTheme()" title.bind="theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'" aria-label.bind="theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'">${theme === 'dark' ? '☀' : '☾'}</button>
   </div>
 </nav>
 
@@ -15,3 +17,4 @@
 </main>
 
 <player-dock></player-dock>
+<toast-host></toast-host>

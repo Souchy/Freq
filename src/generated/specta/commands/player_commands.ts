@@ -6,6 +6,7 @@ import {
   Channel as TAURI_CHANNEL,
 } from "@tauri-apps/api/core";
 import { Result } from '../globals';
+import { DirectoryEntry, DirectoryListing, DlOptions, FileInfo, FolderLocation, PlaybackStatus, SearchResultVideo, TrackMetadata } from '../types';
 
 export namespace player_commands {
 	export async function loadAndPlayFile(path: string) : Promise<Result<null, string>> {
@@ -67,6 +68,14 @@ export namespace player_commands {
 	export async function getDuration() : Promise<Result<number, string>> {
 	    try {
 	        return { status: "ok", data: await TAURI_INVOKE("get_duration") };
+	    } catch (e) {
+	        if(e instanceof Error) throw e;
+	        else return { status: "error", error: e  as any };
+	    }
+	}
+	export async function getPlaybackStatus() : Promise<Result<PlaybackStatus, string>> {
+	    try {
+	        return { status: "ok", data: await TAURI_INVOKE("get_playback_status") };
 	    } catch (e) {
 	        if(e instanceof Error) throw e;
 	        else return { status: "error", error: e  as any };

@@ -1,21 +1,101 @@
-:root {
+:root,
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --ink: #e6ebe2;
+  --muted: #8f9a92;
+  --paper: #111513;
+  --surface: #181d1a;
+  --raised: #1d2420;
+  --line: #2a332e;
+  --lime: #d8f36a;
+  --coral: #f06b52;
+  --on-ink: #111513;
+  --on-lime: #17241f;
+  --ink-hover: #c4ccbf;
+  --hover: #232b27;
+  --field: rgb(255 255 255 / 4%);
+  --focus: #b8d45c;
+  --focus-ring: rgb(216 243 106 / 22%);
+  --accent-faint: rgb(216 243 106 / 5%);
+  --accent-soft: rgb(216 243 106 / 8%);
+  --accent-strong: rgb(216 243 106 / 13%);
+  --danger-soft: rgb(240 107 82 / 16%);
+  --dot: #1d2420;
+  --nav-bg: rgb(17 21 19 / 92%);
+  --shadow: rgb(0 0 0 / 45%);
+  --shadow-soft: rgb(0 0 0 / 25%);
+  --placeholder: #6b756e;
+  --artwork-bg: #232b27;
+  --glow: rgb(216 243 106 / 7%);
+  --scrollbar: #36413b;
+  --dock-clearance: 110px;
+}
+
+:root[data-theme="light"] {
   color-scheme: light;
 
   --ink: #17241f;
   --muted: #748078;
   --paper: #f4f3e9;
   --surface: #fbfbf6;
+  --raised: #fff;
   --line: #d9ddd1;
-  --lime: #d8f36a;
   --coral: #e85d45;
+  --on-ink: #fff;
+  --ink-hover: #34463c;
+  --hover: #e9ecdf;
+  --field: rgb(255 255 255 / 62%);
+  --focus: #9cb448;
+  --focus-ring: rgb(216 243 106 / 36%);
+  --accent-faint: rgb(216 243 106 / 12%);
+  --accent-soft: rgb(216 243 106 / 18%);
+  --accent-strong: rgb(216 243 106 / 26%);
+  --danger-soft: #f4e3de;
+  --dot: #dce1d4;
+  --nav-bg: rgb(244 243 233 / 94%);
+  --shadow: rgb(23 36 31 / 14%);
+  --shadow-soft: rgb(23 36 31 / 5%);
+  --placeholder: #929b93;
+  --artwork-bg: #e3e7d9;
+  --glow: rgb(216 243 106 / 32%);
+  --scrollbar: #c5cbbf;
+}
+
+* {
+  scrollbar-color: var(--scrollbar) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 6px;
+  background: var(--scrollbar) padding-box;
+}
+
+::-webkit-scrollbar-button {
+  display: none;
+}
+
+html,
+body {
+  height: 100%;
+  overflow: hidden;
 }
 
 body {
   min-width: 320px;
-  min-height: 100vh;
   margin: 0;
   background-color: var(--paper);
-  background-image: radial-gradient(#dce1d4 0.65px, transparent 0.65px);
+  background-image: radial-gradient(var(--dot) 0.65px, transparent 0.65px);
   background-size: 15px 15px;
   color: var(--ink);
   font-family: "Trebuchet MS", "Segoe UI", sans-serif;
@@ -32,7 +112,24 @@ input {
   font: inherit;
 }
 
+dialog {
+  max-width: none;
+  max-height: none;
+  padding: 0;
+  border: 0;
+  overflow: visible;
+  background: transparent;
+  color: var(--ink);
+}
+
+my-app {
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
 nav.app-nav {
+  flex: none;
   position: sticky;
   z-index: 5;
   top: 0;
@@ -43,7 +140,7 @@ nav.app-nav {
   gap: 20px;
   padding: 0 clamp(16px, 4vw, 48px);
   border-bottom: 1px solid var(--line);
-  background: rgb(244 243 233 / 94%);
+  background: var(--nav-bg);
   backdrop-filter: blur(12px);
 }
 
@@ -76,13 +173,35 @@ nav.app-nav .links a {
 nav.app-nav .links a:hover,
 nav.app-nav .links a:focus-visible {
   background: var(--lime);
+  color: var(--on-lime);
+}
+
+nav.app-nav .theme-toggle {
+  width: 34px;
+  aspect-ratio: 1;
+  margin-left: 6px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+nav.app-nav .theme-toggle:hover,
+nav.app-nav .theme-toggle:focus-visible {
+  border-color: var(--ink);
   color: var(--ink);
 }
 
 .app-main {
+  flex: 1;
+  min-height: 0;
   width: min(100%, 1480px);
   margin: 0 auto;
-  padding: 24px clamp(16px, 4vw, 56px) 110px;
+  overflow-y: auto;
+  padding: 24px clamp(16px, 4vw, 56px) var(--dock-clearance);
 }
 
 .card {
@@ -113,7 +232,9 @@ nav.app-nav .links a:focus-visible {
   }
 
   .app-main {
-    padding: 18px 14px 96px;
+    --dock-clearance: 92px;
+
+    padding: 18px 14px var(--dock-clearance);
   }
 }
 

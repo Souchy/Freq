@@ -1,5 +1,5 @@
 import { player_commands } from '../generated/specta/commands/player_commands';
-import { library_commands } from '../generated/specta/commands/library_commands';
+import { commands_library_commands } from '../generated/specta/commands/library_commands';
 // import { invoke } from '@tauri-apps/api/tauri';
 
 export enum PlaybackState {
@@ -73,13 +73,19 @@ class AudioService extends EventTarget {
 	}
 
 	async scanFolder(path: string) {
-		const res = await library_commands.scanFolder(path);
+		const res = await commands_library_commands.scanFolder(path);
 		if (res.status === 'ok') return res.data;
 		throw new Error(typeof res.error === 'string' ? res.error : JSON.stringify(res.error));
 	}
 
 	async getMetadata(path: string) {
-		const res = await library_commands.getMetadata(path);
+		const res = await commands_library_commands.getMetadata(path);
+		if (res.status === 'ok') return res.data;
+		throw new Error(typeof res.error === 'string' ? res.error : JSON.stringify(res.error));
+	}
+
+	async getFileInfo(path: string) {
+		const res = await commands_library_commands.getFileInfo(path);
 		if (res.status === 'ok') return res.data;
 		throw new Error(typeof res.error === 'string' ? res.error : JSON.stringify(res.error));
 	}
@@ -100,6 +106,12 @@ class AudioService extends EventTarget {
 		const res = await player_commands.getDuration();
 		if (res.status === 'ok') return res.data;
 		return 0;
+	}
+
+	async getPlaybackStatus() {
+		const res = await player_commands.getPlaybackStatus();
+		if (res.status === 'ok') return res.data;
+		throw new Error(typeof res.error === 'string' ? res.error : JSON.stringify(res.error));
 	}
 }
 

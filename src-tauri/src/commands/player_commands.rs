@@ -1,4 +1,5 @@
 use anyhow::Result;
+use serde::Serialize;
 
 use crate::services::audio::AUDIO_MANAGER;
 
@@ -46,20 +47,43 @@ pub fn set_volume(volume: f32) -> Result<(), String> {
 #[specta::specta]
 #[tauri::command]
 pub fn seek(position_seconds: f64) -> Result<(), String> {
-    // TODO: implement proper seeking using symphonia/rodio playback pipelines
-    Err("seek not implemented yet".into())
+    AUDIO_MANAGER
+        .seek(position_seconds)
+        .map_err(|e| format!("Failed to seek: {e}"))
 }
 
 #[specta::specta]
 #[tauri::command]
 pub fn get_position() -> Result<f64, String> {
-    // TODO: return current playback position
-    Ok(0.0)
+    Ok(AUDIO_MANAGER.position())
 }
 
 #[specta::specta]
 #[tauri::command]
 pub fn get_duration() -> Result<f64, String> {
-    // TODO: return current track duration
-    Ok(0.0)
+    Ok(AUDIO_MANAGER.duration().unwrap_or(0.0))
+}
+
+#[derive(Serialize, specta::Type)]
+pub struct PlaybackStatus {
+    pub path: Option<String>,
+    pub volume: f32,
+    pub position_seconds: f64,
+    pub duration_seconds: Option<f64>,
+    pub is_paused: bool,
+    pub is_finished: bool,
+}
+
+#[specta::specta]
+#[tauri::command]
+pub fn get_playback_status() -> Result<PlaybackStatus, String> {
+    let snapshot = AUDIO_MANAGER.snapshot();
+    Ok(PlaybackStatus {
+        path: snapshot.path,
+        volume: snapshot.volume,
+        position_seconds: snapshot.position_seconds,
+        duration_seconds: snapshot.duration_seconds,
+        is_paused: snapshot.is_paused,
+        is_finished: snapshot.is_finished,
+    })
 }

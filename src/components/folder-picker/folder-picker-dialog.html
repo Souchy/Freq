@@ -1,0 +1,71 @@
+<template>
+  <require from="./folder-picker-dialog.scss"></require>
+
+  <div class="folder-picker" role="document" aria-labelledby="folder-picker-title">
+    <header class="fp-header">
+      <p class="fp-kicker">${kicker}</p>
+      <h2 id="folder-picker-title">${title}</h2>
+      <p class="fp-message" if.bind="message">${message}</p>
+    </header>
+
+    <div class="fp-body">
+      <nav class="fp-places" aria-label="Places">
+        <p class="fp-label" if.bind="places.length">Places</p>
+        <button repeat.for="location of places" type="button" class="fp-place ${currentPath === location.path ? 'is-active' : ''}" click.trigger="open(location.path)" title.bind="location.path">${location.label}</button>
+        <p class="fp-label" if.bind="drives.length">Drives</p>
+        <button repeat.for="location of drives" type="button" class="fp-place ${currentPath === location.path ? 'is-active' : ''}" click.trigger="open(location.path)" title.bind="location.path">${location.label}</button>
+      </nav>
+
+      <section class="fp-browser" aria-label="Folders" aria-busy.bind="isLoading">
+        <div class="fp-toolbar">
+          <button class="fp-icon-button" type="button" click.trigger="open(parentPath)" disabled.bind="!parentPath" title="Up one level" aria-label="Up one level">↑</button>
+          <form class="fp-path-form" if.bind="isEditingPath" submit.trigger="submitPath($event)">
+            <input ref="pathInput" type="text" value.bind="pathDraft" spellcheck="false" autocomplete="off" aria-label="Folder path" keydown.trigger="onPathKeydown($event)" blur.trigger="cancelPathEdit()">
+          </form>
+          <ol class="fp-crumbs" else aria-label="Current folder" title="Click to type a path" click.trigger="onCrumbsClick($event)">
+            <li repeat.for="crumb of crumbs">
+              <button type="button" click.trigger="open(crumb.path)" aria-current.bind="$last ? 'location' : null">${crumb.label}</button>
+            </li>
+          </ol>
+          <button class="fp-icon-button" type="button" if.bind="!isEditingPath" click.trigger="startPathEdit()" title="Type a path" aria-label="Type a path">✎</button>
+          <button class="fp-text-button" type="button" click.trigger="startCreate()" disabled.bind="!currentPath || isCreating">＋ New folder</button>
+        </div>
+
+        <form class="fp-new-folder" if.bind="isCreating" submit.trigger="createFolder($event)">
+          <span class="fp-folder-icon" aria-hidden="true"></span>
+          <input ref="newFolderInput" type="text" value.bind="newFolderName" placeholder="New folder name" aria-label="New folder name" keydown.trigger="onNewFolderKeydown($event)">
+          <button class="fp-text-button" type="submit" disabled.bind="!newFolderName.trim()">Create</button>
+          <button class="fp-text-button" type="button" click.trigger="cancelCreate()">Cancel</button>
+        </form>
+
+        <p class="fp-error" if.bind="error" role="alert">${error}</p>
+
+        <ul class="fp-list" if.bind="directories.length">
+          <li repeat.for="directory of directories">
+            <button type="button" click.trigger="open(directory.path)" title.bind="directory.path">
+              <span class="fp-folder-icon" aria-hidden="true"></span>
+              <span class="fp-folder-name">${directory.name}</span>
+              <span class="fp-chevron" aria-hidden="true">›</span>
+            </button>
+          </li>
+        </ul>
+        <p class="fp-empty" if.bind="!directories.length && !isLoading && !error">No folders in here. This one works fine, though.</p>
+      </section>
+    </div>
+
+    <footer class="fp-footer">
+      <div class="fp-selection">
+        <span>Save to</span>
+        <strong title.bind="currentPath">${currentPath || '—'}</strong>
+      </div>
+      <label class="fp-ask" if.bind="showAskToggle">
+        <input type="checkbox" checked.bind="askEveryTime">
+        <span>Always ask where to save</span>
+      </label>
+      <div class="fp-actions">
+        <button class="fp-secondary" type="button" click.trigger="cancel()">Cancel</button>
+        <button class="fp-primary" type="button" click.trigger="confirm()" disabled.bind="!currentPath || isLoading">${confirmLabel}</button>
+      </div>
+    </footer>
+  </div>
+</template>

@@ -1,4 +1,5 @@
 import { route } from '@aurelia/router';
+import { applyTheme, getTheme, Theme } from './core/theme';
 import { PlayerPage } from './pages/player-page/player-page';
 import { SettingsPage } from './pages/settings-page/settings-page';
 
@@ -27,4 +28,21 @@ import { SettingsPage } from './pages/settings-page/settings-page';
   },
 })
 export class MyApp {
+  public theme: Theme = getTheme();
+
+  private readonly handleThemeChange = (event: Event) => {
+    this.theme = (event as CustomEvent<Theme>).detail;
+  };
+
+  attached() {
+    document.addEventListener('theme:change', this.handleThemeChange);
+  }
+
+  detaching() {
+    document.removeEventListener('theme:change', this.handleThemeChange);
+  }
+
+  public toggleTheme() {
+    applyTheme(this.theme === 'dark' ? 'light' : 'dark');
+  }
 }

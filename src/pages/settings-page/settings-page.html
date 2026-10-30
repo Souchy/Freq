@@ -1,13 +1,95 @@
 <template>
-  <h2>Settings</h2>
-  <div>
-    <label>Scan folder path: <input value.bind="folderPath" /></label>
-    <button click.trigger="scan()">Scan</button>
-  </div>
-  <div>
-    <h3>Last scan results</h3>
-    <ul>
-      <li repeat.for="p of results">${p}</li>
-    </ul>
+  <require from="./settings-page.scss"></require>
+
+  <div class="settings-page">
+    <header class="settings-heading">
+      <p class="settings-kicker">PREFERENCES</p>
+      <h1>Settings</h1>
+    </header>
+
+    <section class="settings-group" aria-labelledby="settings-downloads">
+      <div class="group-intro">
+        <h2 id="settings-downloads">Downloads</h2>
+        <p>Where music from YouTube ends up.</p>
+      </div>
+      <div class="group-card">
+        <div class="setting-row">
+          <div class="setting-copy">
+            <span class="setting-label">Save location</span>
+            <span class="setting-value ${downloadDir ? '' : 'is-empty'}" title.bind="downloadDir">${downloadDir || 'Not set yet. You will be asked on your first download.'}</span>
+          </div>
+          <div class="setting-actions">
+            <button class="ghost-button" type="button" if.bind="downloadDir" click.trigger="resetDownloadDir()">Reset</button>
+            <button class="solid-button" type="button" click.trigger="changeDownloadDir()">${downloadDir ? 'Change…' : 'Choose…'}</button>
+          </div>
+        </div>
+        <label class="setting-row is-toggle">
+          <span class="setting-copy">
+            <span class="setting-label">Always ask where to save</span>
+            <span class="setting-hint">Pick a folder for every download instead of using the save location.</span>
+          </span>
+          <span class="switch">
+            <input type="checkbox" role="switch" checked.bind="askEveryTime" change.trigger="setAskEveryTime($event)">
+            <span class="switch-track" aria-hidden="true"></span>
+          </span>
+        </label>
+      </div>
+    </section>
+
+    <section class="settings-group" aria-labelledby="settings-appearance">
+      <div class="group-intro">
+        <h2 id="settings-appearance">Appearance</h2>
+        <p>How Freq looks on this device.</p>
+      </div>
+      <div class="group-card">
+        <div class="setting-row">
+          <div class="setting-copy">
+            <span class="setting-label">Theme</span>
+          </div>
+          <div class="segmented" role="radiogroup" aria-label="Theme">
+            <button type="button" role="radio" aria-checked.bind="theme === 'dark'" class="${theme === 'dark' ? 'is-active' : ''}" click.trigger="setTheme('dark')">☾ Dark</button>
+            <button type="button" role="radio" aria-checked.bind="theme === 'light'" class="${theme === 'light' ? 'is-active' : ''}" click.trigger="setTheme('light')">☀ Light</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="settings-group" aria-labelledby="settings-library">
+      <div class="group-intro">
+        <h2 id="settings-library">Library</h2>
+        <p>Music Freq knows about on this device.</p>
+      </div>
+      <div class="group-card">
+        <div class="setting-row">
+          <div class="setting-copy">
+            <span class="setting-label">${trackCount} ${trackCount === 1 ? 'track' : 'tracks'}</span>
+            <span class="setting-hint" role="status">${libraryMessage || 'Add a folder to scan it for audio files.'}</span>
+          </div>
+          <div class="setting-actions">
+            <button class="solid-button" type="button" click.trigger="scanFolder()" disabled.bind="isScanning">${isScanning ? 'Scanning…' : 'Add folder…'}</button>
+          </div>
+        </div>
+        <div class="setting-row folder-row" repeat.for="folder of folders">
+          <span class="folder-icon" aria-hidden="true"></span>
+          <div class="setting-copy">
+            <span class="setting-label">${folder.label}</span>
+            <span class="setting-value is-empty" title.bind="folder.path">${folder.path}</span>
+          </div>
+          <span class="folder-count">${folder.count} ${folder.count === 1 ? 'track' : 'tracks'}</span>
+          <button class="ghost-button" type="button" click.trigger="rescanFolder(folder)" disabled.bind="rescanningPath" aria-label="Rescan ${folder.label}">${rescanningPath === folder.path ? 'Scanning…' : 'Rescan'}</button>
+          <button class="ghost-button" type="button" click.trigger="removeFolder(folder.path)" disabled.bind="rescanningPath === folder.path" aria-label="Remove ${folder.label} from the library">Remove</button>
+        </div>
+        <div class="setting-row folder-row" if.bind="looseCount">
+          <span class="folder-icon is-loose" aria-hidden="true"></span>
+          <div class="setting-copy">
+            <span class="setting-label">Other tracks</span>
+            <span class="setting-value is-empty">Added before folders were remembered, or imported one by one.</span>
+          </div>
+          <span class="folder-count">${looseCount} ${looseCount === 1 ? 'track' : 'tracks'}</span>
+          <button class="ghost-button" type="button" click.trigger="removeLooseTracks()" aria-label="Remove other tracks from the library">Remove</button>
+        </div>
+        <p class="folder-note" if.bind="folders.length || looseCount">Removing a folder only takes its tracks out of Freq. Your files stay where they are.</p>
+      </div>
+    </section>
   </div>
 </template>

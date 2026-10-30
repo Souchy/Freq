@@ -1,12 +1,13 @@
 <template>
   <require from="./player-dock.scss"></require>
 
-  <section class.bind="isExpanded ? 'player-dock is-expanded' : 'player-dock is-minimized'" aria-label="Music player" aria-expanded.bind="isExpanded" tabindex="0" click.trigger="onDockClick($event)" keydown.trigger="onDockKeydown($event)">
+  <section class.bind="isExpanded ? 'player-dock is-expanded' : 'player-dock is-minimized'" aria-label="Music player" aria-expanded.bind="isExpanded" tabindex="0" click.trigger="onDockClick($event)" keydown.trigger="onDockKeydown($event)" wheel.trigger="onWheel($event)">
+    <span class="volume-flash" if.bind="showVolumeFlash" role="status">VOL ${volumePercent}%</span>
     <div class="mini-track" if.bind="!isExpanded">
       <div class="mini-art" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
       <div class="track-copy">
         <p class="track-title" title.bind="title">${title || 'Nothing playing'}</p>
-        <p class="track-artist">${artist || 'Choose a track from your library'}</p>
+        <p class="track-artist" if.bind="artist || !title">${artist || 'Choose a track from your library'}</p>
       </div>
     </div>
 
@@ -18,20 +19,22 @@
       </div>
       <div class="track-copy">
         <p class="track-title" title.bind="title">${title || 'Choose a track'}</p>
-        <p class="track-artist">${artist || 'Select something from your collection'}</p>
+        <p class="track-artist" if.bind="artist || !title">${artist || 'Select something from your collection'}</p>
       </div>
-      <div class="progress">
-        <span>${formatTime(position)}</span>
-        <input type="range" min="0" max.bind="duration || 0" value.bind="position" input.trigger="onSeek($event)" aria-label="Playback position" disabled.bind="!duration">
-        <span>${formatTime(duration)}</span>
-      </div>
+    </div>
+
+    <div class="progress">
+      <span>${formatTime(position)}</span>
+      <input type="range" min="0" max.bind="duration || 0" step="0.1" value.to-view="position" input.trigger="onScrub($event)" change.trigger="onSeek($event)" aria-label="Playback position" disabled.bind="!duration">
+      <span>${formatTime(duration)}</span>
     </div>
 
     <div class="player-controls">
       <div class="transport">
-        <button type="button" click.trigger="previous()" title="Restart current track" aria-label="Restart current track" disabled.bind="!title">⏮</button>
+        <button type="button" click.trigger="previous()" title="Previous track" aria-label="Previous track" disabled.bind="!title">⏮</button>
         <button class="play-button" type="button" click.trigger="togglePlay()" title.bind="isPlaying ? 'Pause' : 'Play'" aria-label.bind="isPlaying ? 'Pause' : 'Play'" disabled.bind="!title">${isPlaying ? 'Ⅱ' : '▶'}</button>
         <button type="button" click.trigger="next()" title="Next track" aria-label="Next track" disabled.bind="!title">⏭</button>
+        <button class.bind="repeatMode === 'off' ? 'repeat-button' : 'repeat-button is-active'" type="button" click.trigger="cycleRepeat()" title.bind="repeatLabel" aria-label.bind="repeatLabel" aria-pressed.bind="repeatMode !== 'off'">↻<small if.bind="repeatMode === 'one'">1</small></button>
       </div>
       <label class="volume-control" if.bind="isExpanded">
         <span aria-hidden="true">VOL</span>

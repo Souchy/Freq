@@ -1,45 +1,95 @@
 import { ILogger, resolve } from "aurelia";
+import { IDialogService } from "@aurelia/dialog";
+import { resolveDownloadDir } from "../../core/download-location";
+import { DownloadJob, downloadsService } from "../../core/downloads";
 import { commands_yt } from "../../generated/specta/commands/yt";
 import { SearchResultVideo } from "../../generated/specta/types";
 import "./DownloadPage.scss";
 
-type DownloadStatus = "downloading" | "downloaded" | "error";
-
 export class DownloadPage {
 	private readonly logger = resolve(ILogger).scopeTo("DownloadPage");
+	private readonly dialogs = resolve(IDialogService);
 
+	public activeTab: "search" | "downloads" = "search";
 	public searchInput: string = "";
 	public message = "";
 	public isSearching = false;
 	public hasSearched = false;
 	public playlist: SearchResultVideo[] = [];
-	public downloaded: Record<string, DownloadStatus> = {};
+	public jobs: DownloadJob[] = downloadsService.all;
+	public activeCount = downloadsService.activeCount;
+	/** Latest download job per video URL, for the Save buttons in search results. */
+	public jobsByUrl: Record<string, DownloadJob> = {};
 
-	public async clickDownload(url: string) {
-		this.downloaded = { ...this.downloaded, [url]: "downloading" };
-		this.message = "Saving audio...";
+	private readonly handleDownloadsChange = () => this.syncJobs();
 
-		try {
-			const result = await commands_yt.dlYt(url, {
-				output_dir: "",
-				audio_codec: 0,
-				audio_quality: 0
-			});
+	attached() {
+		this.syncJobs();
+		downloadsService.addEventListener("change", this.handleDownloadsChange);
+	}
 
-			if (result.status === "error") {
-				this.logger.error("Audio download failed", result.error);
-				this.downloaded = { ...this.downloaded, [url]: "error" };
-				this.message = `Download failed: ${result.error}`;
-				return;
-			}
+	detaching() {
+		downloadsService.removeEventListener("change", this.handleDownloadsChange);
+	}
 
-			this.downloaded = { ...this.downloaded, [url]: "downloaded" };
-			this.message = `Saved to ${result.data}`;
-		} catch (error) {
-			this.logger.error("Audio download failed", error);
-			this.downloaded = { ...this.downloaded, [url]: "error" };
-			this.message = `Download failed: ${String(error)}`;
+	public setTab(tab: "search" | "downloads") {
+		this.activeTab = tab;
+	}
+
+	public async clickDownload(url: string, video?: SearchResultVideo) {
+		const outputDir = await resolveDownloadDir(this.dialogs);
+		if (!outputDir) {
+			this.message = "Download cancelled.";
+			return;
 		}
+		this.message = "";
+		void downloadsService.start(
+			{ url, title: video?.title ?? url, thumbnail: video ? this.thumbnailUrl(video) : null },
+			outputDir,
+		);
+	}
+
+	public retry(job: DownloadJob) {
+		void downloadsService.retry(job.id);
+	}
+
+	public remove(job: DownloadJob) {
+		downloadsService.remove(job.id);
+	}
+
+	public clearFinished() {
+		downloadsService.clearFinished();
+	}
+
+	public play(job: DownloadJob) {
+		downloadsService.play(job);
+	}
+
+	public reveal(job: DownloadJob) {
+		if (job.path) void downloadsService.reveal(job.path);
+	}
+
+	public formatSpeed(bytesPerSecond: number | null): string {
+		if (!bytesPerSecond) return "";
+		const megabytes = bytesPerSecond / (1024 * 1024);
+		return megabytes >= 1 ? `${megabytes.toFixed(1)} MB/s` : `${Math.round(bytesPerSecond / 1024)} KB/s`;
+	}
+
+	public formatEta(seconds: number | null): string {
+		if (seconds === null || !Number.isFinite(seconds)) return "";
+		return `${this.formatDuration(seconds)} left`;
+	}
+
+	public formatTime(timestamp: number | null): string {
+		return timestamp ? new Date(timestamp).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" }) : "";
+	}
+
+	private syncJobs() {
+		this.jobs = downloadsService.all;
+		this.activeCount = downloadsService.activeCount;
+		const byUrl: Record<string, DownloadJob> = {};
+		for (const job of [...this.jobs].reverse()) byUrl[job.url] = job;
+		this.jobsByUrl = byUrl;
 	}
 
 	public async submitSearch(event: SubmitEvent) {
@@ -49,6 +99,7 @@ export class DownloadPage {
 
 		if (this.isYoutubeUrl(query)) {
 			await this.clickDownload(query);
+			this.activeTab = "downloads";
 			return;
 		}
 

@@ -10,6 +10,8 @@ const androidLibraryDirectory = 'music-library';
 export type LibraryImportResult = {
   items: PlaylistItem[];
   sourceLabel: string;
+  /** The scanned folder; null for imports that aren't tied to one (Android file picks). */
+  sourcePath: string | null;
 };
 
 export function isAndroidApp(): boolean {
@@ -38,6 +40,7 @@ async function scanDesktopFolder(): Promise<LibraryImportResult | null> {
   return {
     items: paths.map(path => ({ path, name: path.split(/[\\/]/).pop() || path })),
     sourceLabel: selected.split(/[\\/]/).filter(Boolean).pop() || selected,
+    sourcePath: selected,
   };
 }
 
@@ -72,7 +75,7 @@ async function importAndroidAudioFiles(): Promise<LibraryImportResult | null> {
     });
   }
 
-  return { items, sourceLabel: 'this device' };
+  return { items, sourceLabel: 'this device', sourcePath: null };
 }
 
 function nameFromContentUri(uri: string, index: number): string {

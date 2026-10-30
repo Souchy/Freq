@@ -1,15 +1,8 @@
 .download-page {
-	--ink: #17241f;
-	--muted: #748078;
-	--paper: #f4f3e9;
-	--line: #d9ddd1;
-	--lime: #d8f36a;
-	--coral: #e85d45;
-
 	min-height: 100vh;
 	color: var(--ink);
 	background:
-		radial-gradient(ellipse at 86% 12%, rgb(216 243 106 / 32%), transparent 28rem),
+		radial-gradient(ellipse at 86% 12%, var(--glow), transparent 28rem),
 		var(--paper);
 	font-family: "Trebuchet MS", "Segoe UI", sans-serif;
 	display: flex;
@@ -92,16 +85,16 @@
 		display: flex;
 		min-height: 62px;
 		padding: 6px;
-		background: #fff;
-		border: 1px solid #dfe2d7;
+		background: var(--raised);
+		border: 1px solid var(--line);
 		border-radius: 6px;
-		box-shadow: 0 10px 24px rgb(32 48 39 / 6%);
+		box-shadow: 0 10px 24px var(--shadow-soft);
 		transition: border-color 160ms ease, box-shadow 160ms ease;
 	}
 
 	.search-form:focus-within {
-		border-color: #9cb448;
-		box-shadow: 0 0 0 3px rgb(216 243 106 / 36%);
+		border-color: var(--focus);
+		box-shadow: 0 0 0 3px var(--focus-ring);
 	}
 
 	input {
@@ -116,7 +109,7 @@
 	}
 
 	input::placeholder {
-		color: #929b93;
+		color: var(--placeholder);
 	}
 
 	.search-form button,
@@ -124,7 +117,7 @@
 		border: 0;
 		border-radius: 4px;
 		background: var(--ink);
-		color: #fff;
+		color: var(--on-ink);
 		font: 700 13px "Trebuchet MS", "Segoe UI", sans-serif;
 		cursor: pointer;
 		transition: background 140ms ease, transform 140ms ease;
@@ -148,7 +141,7 @@
 
 	.search-form button:hover:not(:disabled),
 	.download-button:hover:not(:disabled) {
-		background: #34463c;
+		background: var(--ink-hover);
 	}
 
 	.search-form button:active:not(:disabled),
@@ -216,7 +209,7 @@
 		aspect-ratio: 1.7778;
 		overflow: hidden;
 		border-radius: 4px;
-		background: #e3e7d9;
+		background: var(--artwork-bg);
 	}
 
 	.artwork img {
@@ -318,10 +311,167 @@
 		width: 15px;
 		aspect-ratio: 1;
 		display: inline-block;
-		border: 2px solid rgb(255 255 255 / 45%);
-		border-top-color: #fff;
+		border: 2px solid currentcolor;
+		border-right-color: transparent;
 		border-radius: 50%;
 		animation: spin 700ms linear infinite;
+	}
+
+	.page-tabs {
+		display: flex;
+		gap: 22px;
+		margin-top: 18px;
+		border-bottom: 1px solid var(--line);
+	}
+
+	.page-tab {
+		position: relative;
+		min-height: 44px;
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+		padding: 0 2px;
+		border: 0;
+		background: transparent;
+		color: var(--muted);
+		font: 700 13px "Trebuchet MS", "Segoe UI", sans-serif;
+		cursor: pointer;
+	}
+
+	.page-tab::after {
+		position: absolute;
+		right: 0;
+		bottom: -1px;
+		left: 0;
+		height: 2px;
+		background: transparent;
+		content: "";
+	}
+
+	.page-tab.is-active {
+		color: var(--ink);
+	}
+
+	.page-tab.is-active::after {
+		background: var(--coral);
+	}
+
+	.tab-badge {
+		min-width: 18px;
+		height: 18px;
+		display: inline-grid;
+		place-items: center;
+		padding: 0 5px;
+		border-radius: 9px;
+		background: var(--lime);
+		color: var(--on-lime);
+		font-size: 10px;
+	}
+
+	.downloads-section {
+		padding: 28px 0 48px;
+	}
+
+	.text-button,
+	.icon-button {
+		border: 1px solid var(--line);
+		border-radius: 4px;
+		background: transparent;
+		color: var(--ink);
+		font: 700 12px "Trebuchet MS", "Segoe UI", sans-serif;
+		cursor: pointer;
+	}
+
+	.text-button {
+		min-height: 34px;
+		padding: 0 12px;
+		white-space: nowrap;
+	}
+
+	.icon-button {
+		width: 34px;
+		height: 34px;
+		color: var(--muted);
+		font-size: 16px;
+	}
+
+	.text-button:hover,
+	.icon-button:hover {
+		border-color: var(--ink);
+		color: var(--ink);
+	}
+
+	.download-list {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.download-item {
+		display: grid;
+		grid-template-columns: 112px minmax(0, 1fr) auto;
+		align-items: center;
+		gap: 16px;
+		padding: 14px 0;
+		border-bottom: 1px solid var(--line);
+	}
+
+	.download-item .artwork {
+		width: 112px;
+	}
+
+	.download-copy {
+		min-width: 0;
+	}
+
+	.download-copy h3 {
+		margin: 0 0 8px;
+		overflow: hidden;
+		font-size: 14px;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.download-progress p,
+	.download-meta {
+		margin: 6px 0 0;
+		overflow: hidden;
+		color: var(--muted);
+		font-size: 12px;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.download-meta.is-error {
+		color: var(--coral);
+		white-space: normal;
+	}
+
+	.progress-track {
+		position: relative;
+		height: 6px;
+		overflow: hidden;
+		border-radius: 3px;
+		background: var(--line);
+	}
+
+	.progress-track span {
+		position: absolute;
+		inset: 0 auto 0 0;
+		border-radius: 3px;
+		background: var(--coral);
+		transition: width 200ms linear;
+	}
+
+	.progress-track.is-indeterminate span {
+		width: 35% !important;
+		animation: progress-slide 1.1s ease-in-out infinite;
+	}
+
+	.download-actions {
+		display: flex;
+		align-items: center;
+		gap: 8px;
 	}
 
 	.footer {
@@ -376,8 +526,26 @@
 	}
 }
 
+@keyframes progress-slide {
+	from {
+		transform: translateX(-100%);
+	}
+
+	to {
+		transform: translateX(290%);
+	}
+}
+
 @media (width <= 560px) {
 	.download-page {
+		.download-item {
+			grid-template-columns: minmax(0, 1fr);
+		}
+
+		.download-item .artwork {
+			display: none;
+		}
+
 		.content {
 			width: min(100% - 32px, 860px);
 		}

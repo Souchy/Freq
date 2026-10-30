@@ -6,7 +6,7 @@
   "build": {
     "frontendDist": "../dist",
     "devUrl": "http://localhost:6789",
-    "beforeBuildCommand": "npm run build",
+    "beforeBuildCommand": "npm run gen:bindings && npm run build",
     "beforeDevCommand": "npm run start"
   },
   "app": {

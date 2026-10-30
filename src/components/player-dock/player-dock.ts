@@ -1,4 +1,6 @@
-import { audioService } from '../../core/audio';
+import type { RepeatMode } from '../../core/player-controller';
+
+const WHEEL_VOLUME_STEP = 0.05;
 
 export class PlayerDock {
   public isExpanded = false;
@@ -8,18 +10,42 @@ export class PlayerDock {
   public duration = 0;
   public position = 0;
   public volume = 1;
+  public repeatMode: RepeatMode = 'off';
+  public showVolumeFlash = false;
+  private volumeFlashTimer?: ReturnType<typeof setTimeout>;
+  private isScrubbing = false;
 
   private readonly handleMetadata = (event: Event) => {
     const metadata = (event as CustomEvent).detail;
     if (!metadata) return;
     this.title = metadata.title ?? this.title;
-    this.artist = metadata.artist ?? this.artist;
-    this.duration = metadata.duration_seconds ?? this.duration;
+    this.artist = metadata.artist ?? null;
+    this.duration = metadata.duration_seconds ?? 0;
     this.position = 0;
   };
 
   private readonly handlePosition = (event: Event) => {
+    if (this.isScrubbing) return;
     this.position = (event as CustomEvent<number>).detail;
+  };
+
+  private readonly handleDuration = (event: Event) => {
+    this.duration = (event as CustomEvent<number>).detail;
+  };
+
+  private readonly handleStopped = () => {
+    this.title = null;
+    this.artist = null;
+    this.duration = 0;
+    this.position = 0;
+  };
+
+  private readonly handleRepeat = (event: Event) => {
+    this.repeatMode = (event as CustomEvent<RepeatMode>).detail;
+  };
+
+  private readonly handleVolume = (event: Event) => {
+    this.volume = (event as CustomEvent<number>).detail;
   };
 
   private readonly handlePlayerState = (event: Event) => {
@@ -37,14 +63,24 @@ export class PlayerDock {
     document.addEventListener('click', this.handleOutsideClick);
     document.addEventListener('player:metadata', this.handleMetadata);
     document.addEventListener('player:position', this.handlePosition);
+    document.addEventListener('player:duration', this.handleDuration);
+    document.addEventListener('player:stopped', this.handleStopped);
+    document.addEventListener('player:repeat', this.handleRepeat);
+    document.addEventListener('player:volume', this.handleVolume);
     document.addEventListener('player:state', this.handlePlayerState);
+    document.dispatchEvent(new CustomEvent('player:sync'));
   }
 
   detaching() {
     document.removeEventListener('click', this.handleOutsideClick);
     document.removeEventListener('player:metadata', this.handleMetadata);
     document.removeEventListener('player:position', this.handlePosition);
+    document.removeEventListener('player:duration', this.handleDuration);
+    document.removeEventListener('player:stopped', this.handleStopped);
+    document.removeEventListener('player:repeat', this.handleRepeat);
+    document.removeEventListener('player:volume', this.handleVolume);
     document.removeEventListener('player:state', this.handlePlayerState);
+    clearTimeout(this.volumeFlashTimer);
   }
 
   public toggleExpanded() {
@@ -77,16 +113,47 @@ export class PlayerDock {
     document.dispatchEvent(new CustomEvent('controls:next'));
   }
 
-  public async onSeek(event: Event) {
-    const input = event.target as HTMLInputElement;
-    this.position = Number(input.value);
-    await audioService.seek(this.position).catch(() => undefined);
+  public cycleRepeat() {
+    document.dispatchEvent(new CustomEvent('controls:repeat'));
   }
 
-  public async onVolumeChange(event: Event) {
-    const input = event.target as HTMLInputElement;
-    this.volume = Number(input.value);
-    await audioService.setVolume(this.volume).catch(() => undefined);
+  public get repeatLabel() {
+    if (this.repeatMode === 'one') return 'Repeat current track';
+    if (this.repeatMode === 'all') return 'Repeat queue';
+    return 'Repeat off';
+  }
+
+  public onScrub(event: Event) {
+    this.isScrubbing = true;
+    this.position = Number((event.target as HTMLInputElement).value);
+  }
+
+  public onSeek(event: Event) {
+    this.position = Number((event.target as HTMLInputElement).value);
+    this.isScrubbing = false;
+    document.dispatchEvent(new CustomEvent('seek', { detail: this.position }));
+  }
+
+  public onVolumeChange(event: Event) {
+    this.volume = Number((event.target as HTMLInputElement).value);
+    document.dispatchEvent(new CustomEvent('controls:volume', { detail: this.volume }));
+  }
+
+  public onWheel(event: WheelEvent) {
+    if (event.deltaY === 0) return;
+    event.preventDefault();
+    const direction = event.deltaY < 0 ? 1 : -1;
+    const volume = Math.min(1, Math.max(0, this.volume + direction * WHEEL_VOLUME_STEP));
+    if (volume === this.volume) return;
+    this.volume = volume;
+    document.dispatchEvent(new CustomEvent('controls:volume', { detail: volume }));
+    this.showVolumeFlash = true;
+    clearTimeout(this.volumeFlashTimer);
+    this.volumeFlashTimer = setTimeout(() => this.showVolumeFlash = false, 900);
+  }
+
+  public get volumePercent() {
+    return Math.round(this.volume * 100);
   }
 
   public formatTime(seconds: number) {
