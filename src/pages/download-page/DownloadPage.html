@@ -1,9 +1,4 @@
 <div class="download-page">
-  <header class="topbar">
-    <div class="wordmark">freq<span>.</span></div>
-    <div class="topbar-meta"><span class="status-dot"></span> SOUND LIBRARY</div>
-  </header>
-
   <main class="content">
     <nav class="page-tabs" role="tablist" aria-label="YouTube views">
       <button type="button" role="tab" aria-selected.bind="activeTab === 'search'" class="page-tab ${activeTab === 'search' ? 'is-active' : ''}" click.trigger="setTab('search')">Search</button>
@@ -13,10 +8,7 @@
       </button>
     </nav>
 
-    <div show.bind="activeTab === 'search'">
-    <section class="search-section" aria-labelledby="page-title">
-      <p class="eyebrow">YOUTUBE / AUDIO</p>
-      <h1 id="page-title">Find your next<br class="mobile-break"> favorite.</h1>
+    <div class="search-view" show.bind="activeTab === 'search'">
       <form class="search-form" submit.trigger="submitSearch($event)">
         <label class="visually-hidden" for="track-search">Search YouTube or paste a video link</label>
         <input id="track-search" type="search" value.bind="searchInput" placeholder="Track, artist, or YouTube link" autocomplete="off">
@@ -25,10 +17,8 @@
           <span if.bind="isSearching" class="button-loader" aria-label="Searching"></span>
         </button>
       </form>
-      <p class="search-note">Search tracks or paste a YouTube link to save audio.</p>
-    </section>
 
-    <section class="results-section" aria-live="polite" aria-busy.bind="isSearching">
+    <section class="results-section" aria-label="Search results" aria-live="polite" aria-busy.bind="isSearching">
       <div class="results-heading" if.bind="playlist.length">
         <h2>Search results</h2>
         <span>${playlist.length} tracks</span>
@@ -63,10 +53,9 @@
     </section>
     </div>
 
-    <section class="downloads-section" show.bind="activeTab === 'downloads'" aria-labelledby="downloads-title">
-      <div class="results-heading">
-        <h2 id="downloads-title">Downloads</h2>
-        <button class="text-button" type="button" click.trigger="clearFinished()" if.bind="jobs.length > activeCount">Clear finished</button>
+    <section class="downloads-section" show.bind="activeTab === 'downloads'" aria-label="Downloads">
+      <div class="downloads-toolbar" if.bind="jobs.length > activeCount">
+        <button class="text-button" type="button" click.trigger="clearFinished()">Clear finished</button>
       </div>
 
       <div class="empty-state" if.bind="!jobs.length">
@@ -105,6 +94,4 @@
       </ul>
     </section>
   </main>
-
-  <footer class="footer"><span>FREQ</span><span>Make room for good sound.</span></footer>
 </div>

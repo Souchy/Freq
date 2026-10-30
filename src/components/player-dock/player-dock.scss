@@ -45,12 +45,12 @@
 		right: clamp(14px, 4vw, 48px);
 		bottom: calc(14px + env(safe-area-inset-bottom));
 		left: clamp(14px, 4vw, 48px);
-		min-height: 78px;
+		min-height: 64px;
 		display: grid;
 		grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) auto;
 		align-items: center;
-		gap: 24px;
-		padding: 12px 18px;
+		gap: 16px;
+		padding: 8px 14px;
 	}
 
 	&.is-expanded {
@@ -92,11 +92,11 @@
 		min-width: 0;
 		display: flex;
 		align-items: center;
-		gap: 12px;
+		gap: 8px;
 	}
 
 	.mini-art {
-		width: 48px;
+		width: 40px;
 		aspect-ratio: 1;
 		flex: 0 0 auto;
 		display: flex;
@@ -143,14 +143,14 @@
 	}
 
 	.track-title {
-		font-size: 13px;
+		font-size: 12px;
 		font-weight: 700;
 	}
 
 	.track-artist {
-		margin-top: 4px;
+		margin-top: 2px;
 		color: var(--dock-muted);
-		font-size: 11px;
+		font-size: 10px;
 	}
 
 	.expanded-art {
@@ -366,10 +366,10 @@
 			right: 10px;
 			bottom: calc(10px + env(safe-area-inset-bottom));
 			left: 10px;
-			min-height: 68px;
+			min-height: 58px;
 			grid-template-columns: minmax(0, 1fr) auto;
-			gap: 6px;
-			padding: 8px 10px;
+			gap: 4px;
+			padding: 6px 8px;
 		}
 
 		&.is-minimized .progress {
@@ -396,7 +396,7 @@
 		}
 
 		.mini-art {
-			width: 40px;
+			width: 36px;
 		}
 
 		.track-title {

@@ -29,68 +29,10 @@
 		flex-direction: column;
 	}
 
-	.browse-kicker {
-		margin: 0;
-		color: var(--player-muted);
-		font-size: 10px;
-		font-weight: 700;
-		letter-spacing: 0.12em;
-	}
-
-	.browse-heading {
-		flex: none;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: 16px;
-		border-bottom: 1px solid var(--player-line);
-	}
-
-	.view-tabs {
-		display: flex;
-		align-items: center;
-		gap: 22px;
-	}
-
-	.view-tab {
-		position: relative;
-		min-height: 46px;
-		padding: 0 2px;
-		border: 0;
-		background: transparent;
-		color: var(--player-muted);
-		font-size: 13px;
-		font-weight: 700;
-		cursor: pointer;
-	}
-
-	.view-tab::after {
-		position: absolute;
-		right: 0;
-		bottom: -1px;
-		left: 0;
-		height: 2px;
-		background: transparent;
-		content: "";
-	}
-
-	.view-tab.is-active {
-		color: var(--player-ink);
-	}
-
-	.view-tab.is-active::after {
-		background: var(--player-coral);
-	}
-
-	.view-tab:focus-visible,
 	button:focus-visible,
 	input:focus-visible {
 		outline: 2px solid var(--focus);
 		outline-offset: 3px;
-	}
-
-	.browse-view {
-		padding-top: 24px;
 	}
 
 	.library {
@@ -100,28 +42,23 @@
 		background: transparent;
 	}
 
-	.library-heading {
-		display: flex;
-		align-items: end;
-		justify-content: space-between;
-		gap: 16px;
-		padding-bottom: 18px;
-		border-bottom: 1px solid var(--player-line);
+	.library-toolbar {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto auto;
+		align-items: center;
+		gap: 12px;
+		margin-bottom: 12px;
 	}
 
-	.library-heading h2 {
-		margin: 0 0 5px;
-		font: 400 24px Georgia, "Times New Roman", serif;
-	}
-
-	.library-heading p {
+	.library-count {
 		margin: 0;
 		color: var(--player-muted);
-		font-size: 12px;
+		font-size: 10px;
+		white-space: nowrap;
 	}
 
 	.scan-button {
-		min-height: 38px;
+		min-height: 34px;
 		padding: 0 12px;
 		border: 0;
 		border-radius: 4px;
@@ -149,12 +86,13 @@
 
 	.library-search {
 		position: relative;
-		margin: 18px 0 6px;
+		min-width: 0;
+		margin: 0;
 	}
 
 	.library-search input {
 		width: 100%;
-		min-height: 42px;
+		min-height: 36px;
 		padding: 0 12px 0 38px;
 		border: 1px solid var(--player-line);
 		border-radius: 4px;
@@ -416,16 +354,16 @@
 	}
 
 	.library-empty {
-		padding: 36px 16px;
+		padding: 18px 12px;
 		border-bottom: 1px solid var(--player-line);
 		text-align: center;
 	}
 
 	.library-empty strong {
 		display: block;
-		margin-bottom: 6px;
+		margin-bottom: 4px;
 		color: var(--player-ink);
-		font: 400 19px Georgia, "Times New Roman", serif;
+		font: 400 17px Georgia, "Times New Roman", serif;
 	}
 
 	.queue-view .queue {
@@ -561,20 +499,9 @@
 
 @media (width <= 560px) {
 	.player-page {
-		.browse-kicker {
-			font-size: 9px;
-		}
-
-		.view-tabs {
-			gap: 18px;
-		}
-
-		.library-heading {
-			align-items: start;
-		}
-
-		.library-heading h2 {
-			font-size: 21px;
+		.library-toolbar {
+			grid-template-columns: minmax(0, 1fr) auto auto;
+			gap: 8px;
 		}
 
 		.scan-button {

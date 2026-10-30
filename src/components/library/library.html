@@ -1,20 +1,16 @@
 <template>
-  <section class="library" aria-labelledby="library-title">
-    <header class="library-heading">
-      <div>
-        <h2 id="library-title">Your collection</h2>
-        <p>${items.length} ${items.length === 1 ? 'track' : 'tracks'} on this device</p>
-      </div>
+  <section class="library" aria-label="Local music library">
+    <div class="library-toolbar">
+      <label class="library-search">
+        <span class="search-mark" aria-hidden="true">⌕</span>
+        <span class="visually-hidden">Filter your collection</span>
+        <input type="search" placeholder="Filter tracks" value.bind="filter" autocomplete="off">
+      </label>
+      <p class="library-count">${items.length} ${items.length === 1 ? 'track' : 'tracks'}</p>
       <button class="scan-button" type="button" click.trigger="addMusic()" disabled.bind="isScanning">
         ${isScanning ? 'Adding...' : isAndroid ? '＋ Import audio' : '＋ Add folder'}
       </button>
-    </header>
-
-    <label class="library-search">
-      <span class="search-mark" aria-hidden="true">⌕</span>
-      <span class="visually-hidden">Filter your collection</span>
-      <input type="search" placeholder="Filter your collection" value.bind="filter" autocomplete="off">
-    </label>
+    </div>
 
     <p class="library-message" if.bind="message" role="status">${message}</p>
 

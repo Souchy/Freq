@@ -9,38 +9,11 @@
 		box-sizing: border-box;
 	}
 
-	button:focus-visible,
-	input:focus-visible + .switch-track {
-		outline: 2px solid var(--focus);
-		outline-offset: 3px;
-	}
-
-	.settings-heading {
-		padding: 8px 0 26px;
-		border-bottom: 1px solid var(--line);
-	}
-
-	.settings-kicker {
-		margin: 0 0 10px;
-		color: var(--coral);
-		font-size: 10px;
-		font-weight: 700;
-		letter-spacing: 0.12em;
-	}
-
-	h1 {
-		margin: 0;
-		font-family: Georgia, "Times New Roman", serif;
-		font-size: clamp(36px, 5vw, 52px);
-		font-weight: 400;
-		line-height: 1;
-	}
-
 	.settings-group {
 		display: grid;
 		grid-template-columns: minmax(160px, 220px) minmax(0, 1fr);
 		gap: 18px 40px;
-		padding: 28px 0;
+		padding: 18px 0;
 		border-bottom: 1px solid var(--line);
 	}
 
@@ -129,13 +102,13 @@
 		color: var(--on-ink);
 	}
 
-	.solid-button:hover:not(:disabled) {
-		background: var(--ink-hover);
-	}
-
 	.solid-button:disabled {
 		cursor: wait;
 		opacity: 0.6;
+	}
+
+	.solid-button:hover:not(:disabled) {
+		background: var(--ink-hover);
 	}
 
 	.ghost-button {
@@ -144,14 +117,14 @@
 		color: var(--muted);
 	}
 
-	.ghost-button:hover:not(:disabled) {
-		border-color: var(--ink);
-		color: var(--ink);
-	}
-
 	.ghost-button:disabled {
 		cursor: wait;
 		opacity: 0.5;
+	}
+
+	.ghost-button:hover:not(:disabled) {
+		border-color: var(--ink);
+		color: var(--ink);
 	}
 
 	.switch {
@@ -174,6 +147,12 @@
 		border-radius: 11px;
 		background: var(--line);
 		transition: background-color 140ms ease;
+	}
+
+	button:focus-visible,
+	input:focus-visible + .switch-track {
+		outline: 2px solid var(--focus);
+		outline-offset: 3px;
 	}
 
 	.switch-track::after {

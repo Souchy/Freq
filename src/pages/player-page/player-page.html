@@ -1,24 +1,10 @@
 <template>
   <require from="./player-workspace.scss"></require>
   <require from="../../components/library/library"></require>
-  <require from="../../components/queue/queue"></require>
 
   <div class="player-page">
-    <section class="browse-workspace" aria-label="Music browser">
-      <header class="browse-heading">
-        <div class="view-tabs" role="tablist" aria-label="Browse views">
-          <button type="button" role="tab" aria-selected.bind="activeView === 'library'" class.bind="activeView === 'library' ? 'view-tab is-active' : 'view-tab'" click.trigger="setView('library')">Library</button>
-          <button type="button" role="tab" aria-selected.bind="activeView === 'queue'" class.bind="activeView === 'queue' ? 'view-tab is-active' : 'view-tab'" click.trigger="setView('queue')">Queue</button>
-        </div>
-        <span class="browse-kicker">LOCAL AUDIO</span>
-      </header>
-
-      <div class="browse-view" show.bind="activeView === 'library'">
-        <library></library>
-      </div>
-      <div class="browse-view queue-view" show.bind="activeView === 'queue'">
-        <queue></queue>
-      </div>
+    <section class="browse-workspace" aria-label="Music library">
+      <library></library>
     </section>
   </div>
 </template>

@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 use tauri::{Emitter, Manager, State};
 use tokio::io::AsyncBufReadExt;
 use yt_dlp::{
-    extractor::{ExtractorBase, VideoExtractor},
+    extractor::{ExtractorBase, ExtractorConfig, VideoExtractor, Youtube},
     model::playlist::PlaylistEntry,
     Downloader, VideoSelection,
 };
@@ -55,7 +55,7 @@ pub async fn yt_search(
     downloader: State<'_, Downloader>,
 ) -> Result<Vec<SearchResultVideo>, String> {
     let downloader: &Downloader = downloader.inner();
-    let youtube = downloader.youtube_extractor();
+    let youtube = system_trusted_youtube_extractor(downloader);
     let results = youtube
         .search(&search, end as usize)
         .await
@@ -94,7 +94,7 @@ pub async fn get_video_recommendations(
 ) -> Result<Vec<SearchResultVideo>, String> {
     let downloader: &Downloader = downloader.inner();
 
-    let youtube = downloader.youtube_extractor();
+    let youtube = system_trusted_youtube_extractor(downloader);
     let playlist = youtube
         .fetch_playlist(&url)
         .await
@@ -133,6 +133,12 @@ pub async fn get_video_recommendations(
         .collect();
 
     Ok(frontend_results)
+}
+
+fn system_trusted_youtube_extractor(downloader: &Downloader) -> Youtube {
+    let mut extractor = Youtube::new(downloader.libraries().youtube.clone());
+    extractor.with_arg("--compat-options=no-certifi".to_string());
+    extractor
 }
 
 #[specta::specta]
@@ -324,7 +330,9 @@ async fn run_ytdlp(
 ) -> Result<String, YtDlpFailure> {
     let libraries = downloader.libraries();
     let mut command = tokio::process::Command::new(&libraries.youtube);
-    command.arg("--no-playlist");
+    command
+        .args(["--compat-options", "no-certifi"])
+        .arg("--no-playlist");
     match mode {
         AudioOutput::Mp3WithTags => {
             command

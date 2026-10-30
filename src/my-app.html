@@ -3,8 +3,8 @@
 <require from="./components/toast-host/toast-host"></require>
 
 <nav class="app-nav" aria-label="Main navigation">
-  <div class="brand">freq<span>.</span></div>
   <div class="links">
+    <a if.bind="queueCount > 0" href="queue">Queue</a>
     <a href="library">Library</a>
     <a href="youtube">YouTube</a>
     <a href="settings">Settings</a>

@@ -1,5 +1,5 @@
 .download-page {
-	min-height: 100vh;
+	min-height: 100%;
 	color: var(--ink);
 	background:
 		radial-gradient(ellipse at 86% 12%, var(--glow), transparent 28rem),
@@ -12,79 +12,19 @@
 		box-sizing: border-box;
 	}
 
-	.topbar {
-		height: 68px;
-		padding: 0 clamp(20px, 5vw, 72px);
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		border-bottom: 1px solid var(--line);
-	}
-
-	.wordmark {
-		color: var(--ink);
-		font: 700 29px/1 Georgia, serif;
-		text-decoration: none;
-	}
-
-	.wordmark span {
-		color: var(--coral);
-	}
-
-	.topbar-meta,
-	.eyebrow,
-	.footer {
-		font-size: 10px;
-		font-weight: 700;
-		letter-spacing: 0.12em;
-	}
-
-	.topbar-meta {
-		display: flex;
-		align-items: center;
-		gap: 9px;
-		color: var(--muted);
-	}
-
-	.status-dot {
-		width: 8px;
-		aspect-ratio: 1;
-		border-radius: 50%;
-		background: #75a94a;
-	}
-
 	.content {
-		width: min(100% - 40px, 860px);
+	width: min(100%, 1120px);
+	min-height: 100%;
 		margin: 0 auto;
-		flex: 1;
-	}
-
-	.search-section {
-		padding: clamp(42px, 8vh, 82px) 0 42px;
-		animation: arrive 420ms ease-out both;
-	}
-
-	.eyebrow {
-		margin: 0 0 14px;
-		color: var(--coral);
-	}
-
-	h1 {
-		margin: 0 0 28px;
-		font-family: Georgia, "Times New Roman", serif;
-		font-size: clamp(38px, 6vw, 64px);
-		font-weight: 400;
-		line-height: 0.99;
-	}
-
-	.mobile-break {
-		display: none;
+		display: flex;
+		flex-direction: column;
 	}
 
 	.search-form {
 		display: flex;
-		min-height: 62px;
-		padding: 6px;
+		min-height: 48px;
+		margin: 10px 0 14px;
+		padding: 4px;
 		background: var(--raised);
 		border: 1px solid var(--line);
 		border-radius: 6px;
@@ -100,12 +40,12 @@
 	input {
 		width: 100%;
 		min-width: 0;
-		padding: 0 16px;
+		padding: 0 12px;
 		border: 0;
 		outline: 0;
 		background: transparent;
 		color: var(--ink);
-		font: 16px "Trebuchet MS", "Segoe UI", sans-serif;
+		font: 14px "Trebuchet MS", "Segoe UI", sans-serif;
 	}
 
 	input::placeholder {
@@ -124,8 +64,8 @@
 	}
 
 	.search-form button {
-		width: 114px;
-		flex: 0 0 114px;
+		width: 88px;
+		flex: 0 0 88px;
 	}
 
 	.download-button {
@@ -149,21 +89,15 @@
 		transform: translateY(1px);
 	}
 
-	.search-note {
-		margin: 11px 0 0;
-		color: var(--muted);
-		font-size: 12px;
-	}
-
 	.results-section {
-		padding-bottom: 48px;
+		padding-bottom: 20px;
 	}
 
 	.results-heading {
 		display: flex;
 		align-items: baseline;
 		justify-content: space-between;
-		padding: 0 0 12px;
+		padding: 0 0 8px;
 		border-bottom: 1px solid var(--line);
 	}
 
@@ -191,10 +125,10 @@
 	.track-row {
 		min-width: 0;
 		display: grid;
-		grid-template-columns: 152px minmax(0, 1fr) auto;
+		grid-template-columns: 112px minmax(0, 1fr) auto;
 		align-items: center;
-		gap: 18px;
-		padding: 14px 0;
+		gap: 12px;
+		padding: 10px 0;
 		border-bottom: 1px solid var(--line);
 		animation: arrive 260ms ease-out both;
 	}
@@ -205,7 +139,7 @@
 
 	.artwork {
 		position: relative;
-		width: 152px;
+		width: 112px;
 		aspect-ratio: 1.7778;
 		overflow: hidden;
 		border-radius: 4px;
@@ -256,14 +190,14 @@
 	}
 
 	.empty-state {
-		min-height: 150px;
+		min-height: 96px;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-		gap: 16px;
+		gap: 10px;
 		color: var(--muted);
-		font: 17px Georgia, "Times New Roman", serif;
+		font: 15px Georgia, "Times New Roman", serif;
 		animation: arrive 420ms ease-out both;
 	}
 
@@ -319,14 +253,14 @@
 
 	.page-tabs {
 		display: flex;
-		gap: 22px;
-		margin-top: 18px;
+		gap: 16px;
+		margin-top: 0;
 		border-bottom: 1px solid var(--line);
 	}
 
 	.page-tab {
 		position: relative;
-		min-height: 44px;
+		min-height: 34px;
 		display: inline-flex;
 		align-items: center;
 		gap: 8px;
@@ -369,7 +303,13 @@
 	}
 
 	.downloads-section {
-		padding: 28px 0 48px;
+		padding: 8px 0 16px;
+	}
+
+	.downloads-toolbar {
+		display: flex;
+		justify-content: flex-end;
+		padding-bottom: 8px;
 	}
 
 	.text-button,
@@ -474,21 +414,6 @@
 		gap: 8px;
 	}
 
-	.footer {
-		min-height: 48px;
-		padding: 0 clamp(20px, 5vw, 72px);
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		border-top: 1px solid var(--line);
-		color: var(--muted);
-		font-size: 9px;
-	}
-
-	.footer span:first-child {
-		color: var(--ink);
-	}
-
 	.visually-hidden {
 		position: absolute;
 		width: 1px;
@@ -550,32 +475,6 @@
 			width: min(100% - 32px, 860px);
 		}
 
-		.topbar {
-			height: 58px;
-			padding: 0 16px;
-		}
-
-		.topbar-meta {
-			font-size: 9px;
-		}
-
-		.search-section {
-			padding: 48px 0 30px;
-		}
-
-		h1 {
-			margin-bottom: 23px;
-			font-size: 43px;
-		}
-
-		.mobile-break {
-			display: initial;
-		}
-
-		.search-form {
-			min-height: 56px;
-		}
-
 		.search-form button {
 			width: 82px;
 			flex-basis: 82px;
@@ -592,7 +491,7 @@
 			padding: 12px 0;
 		}
 
-		.artwork {
+		.track-row .artwork {
 			width: 104px;
 		}
 
@@ -610,9 +509,6 @@
 			min-height: 32px;
 		}
 
-		.footer {
-			padding: 0 16px;
-		}
 	}
 }
 
