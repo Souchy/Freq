@@ -1,15 +1,20 @@
+import { IDialogService } from '@aurelia/dialog';
+import { resolve } from 'aurelia';
 import { playlistService, PlaylistItem } from '../../core/playlist';
 import { addMusicSource, isAndroidApp } from '../../core/library-import';
 import { audioService } from '../../core/audio';
+import { toastService } from '../../core/toast';
+import { pickFolder } from '../../core/download-location';
 import type { FileInfo, TrackMetadata } from '../../generated/specta/types';
 
 type DetailRow = { label: string; value: string };
 
 export class Library {
+  private readonly dialogs = resolve(IDialogService);
+
   public items: PlaylistItem[] = playlistService.all;
   public filter = '';
   public isScanning = false;
-  public message = '';
   public isAndroid = isAndroidApp();
   public detailsPath: string | null = null;
   public detailRows: DetailRow[] = [];
@@ -54,9 +59,16 @@ export class Library {
     if (this.isScanning) return;
 
     this.isScanning = true;
-    this.message = '';
     try {
-      const source = await addMusicSource();
+      const source = await addMusicSource(async () => {
+        const result = await pickFolder(this.dialogs, {
+          kicker: 'LIBRARY',
+          title: 'Add a music folder',
+          message: 'Freq scans this folder and everything inside it for audio files.',
+          confirmLabel: 'Scan this folder',
+        });
+        return result?.path ?? null;
+      });
       if (!source) return;
 
       if (source.sourcePath) {
@@ -66,12 +78,16 @@ export class Library {
       }
       this.filter = '';
       if (!source.items.length) {
-        this.message = 'No supported audio files found in that folder.';
+        toastService.show({ kind: 'info', title: 'No audio files found', message: source.sourceLabel }, 3000);
       } else {
-        this.message = `Added ${source.items.length} ${source.items.length === 1 ? 'track' : 'tracks'} from ${source.sourceLabel}.`;
+        toastService.show({
+          kind: 'success',
+          title: `Added ${source.items.length} ${source.items.length === 1 ? 'track' : 'tracks'}`,
+          message: source.sourceLabel,
+        }, 3000);
       }
     } catch (error) {
-      this.message = `Could not add music: ${String(error)}`;
+      toastService.show({ kind: 'error', title: 'Could not add music', message: String(error) });
     } finally {
       this.isScanning = false;
     }

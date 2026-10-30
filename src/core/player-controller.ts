@@ -44,6 +44,7 @@ class PlayerController {
     document.addEventListener('controls:repeat', () => this.cycleRepeat());
     document.addEventListener('queue:add', (e: Event) => this.enqueue((e as CustomEvent).detail));
     document.addEventListener('queue:replace', (e: Event) => this.replaceQueue((e as CustomEvent).detail));
+    document.addEventListener('queue:clear', () => void this.clearQueue());
     document.addEventListener('queue:play-from', (e: Event) => {
       const { items, path } = (e as CustomEvent<{ items: QueueItem[]; path: string }>).detail;
       this.playFrom(path, items);
@@ -167,6 +168,14 @@ class PlayerController {
     this.queue.splice(index, 1);
     if (index < this.currentIndex) this.currentIndex--;
     this.emitQueue();
+  }
+
+  async clearQueue() {
+    if (this.queue.length === 0 && !this.hasTrack) return;
+    this.queue = [];
+    this.currentIndex = 0;
+    this.emitQueue();
+    if (this.hasTrack) await this.stop();
   }
 
   replaceQueue(items: QueueItem[]) {

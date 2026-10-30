@@ -2,7 +2,10 @@
   <section class="queue" aria-labelledby="queue-title">
     <header class="queue-heading">
       <h2 id="queue-title">Queue</h2>
-      <span>${items.length} ${items.length === 1 ? 'track' : 'tracks'}</span>
+      <div class="queue-heading-actions">
+        <span>${items.length} ${items.length === 1 ? 'track' : 'tracks'}</span>
+        <button class="queue-clear" type="button" click.trigger="clear()" if.bind="items.length" title="Clear queue">Clear</button>
+      </div>
     </header>
     <div class="queue-scroll">
       <ul ref="listEl">

@@ -40,17 +40,20 @@ afterEach(() => {
 describe('local music import', () => {
   it('scans a selected folder on desktop', async () => {
     Object.defineProperty(navigator, 'userAgent', { configurable: true, value: 'Desktop WebView' });
-    mocks.open.mockResolvedValue('C:/Music');
+    const selectFolder = vi.fn().mockResolvedValue('C:/Music');
     mocks.scanFolder.mockResolvedValue(['C:/Music/song.flac']);
 
-    const result = await addMusicSource();
+    const result = await addMusicSource(selectFolder);
 
+    expect(selectFolder).toHaveBeenCalledOnce();
     expect(mocks.scanFolder).toHaveBeenCalledWith('C:/Music');
     expect(result).toEqual({
       items: [{ path: 'C:/Music/song.flac', name: 'song.flac' }],
       sourceLabel: 'Music',
+      sourcePath: 'C:/Music',
     });
     expect(mocks.copyFile).not.toHaveBeenCalled();
+    expect(mocks.open).not.toHaveBeenCalled();
   });
 
   it('copies Android content URIs into app-local storage', async () => {

@@ -12,8 +12,6 @@
       </button>
     </div>
 
-    <p class="library-message" if.bind="message" role="status">${message}</p>
-
     <div class="track-list" if.bind="filteredItems.length">
       <ul>
         <li class="track-row ${detailsPath === item.path ? 'is-open' : ''} ${currentPath === item.path ? 'is-current' : ''}" aria-current.bind="currentPath === item.path ? 'true' : null" repeat.for="item of filteredItems">
@@ -43,10 +41,10 @@
       </ul>
     </div>
 
-    <div class="library-empty" if.bind="!items.length && !message">
+    <div class="library-empty" if.bind="!items.length">
       <strong>Your library starts here.</strong>
       <span>${isAndroid ? 'Import audio files stored on this device.' : 'Add a folder of audio files to browse and play your collection.'}</span>
     </div>
-    <p class="library-empty" if.bind="items.length && !filteredItems.length && !message">No tracks match that filter.</p>
+    <p class="library-empty" if.bind="items.length && !filteredItems.length">No tracks match that filter.</p>
   </section>
 </template>

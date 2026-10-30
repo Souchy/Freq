@@ -47,6 +47,10 @@ export class Queue {
     document.dispatchEvent(new CustomEvent('queue:remove', { detail: index }));
   }
 
+  clear() {
+    document.dispatchEvent(new CustomEvent('queue:clear'));
+  }
+
   play(index: number) {
     if (index === this.currentIndex && this.currentPath) {
       document.dispatchEvent(new CustomEvent(this.isPlaying ? 'controls:pause' : 'controls:resume'));

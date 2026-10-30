@@ -14,26 +14,27 @@ export type LibraryImportResult = {
   sourcePath: string | null;
 };
 
+export type DesktopFolderSelector = () => Promise<string | null>;
+
 export function isAndroidApp(): boolean {
   return /android/i.test(navigator.userAgent);
 }
 
-export async function addMusicSource(): Promise<LibraryImportResult | null> {
+export async function addMusicSource(
+  selectDesktopFolder?: DesktopFolderSelector,
+): Promise<LibraryImportResult | null> {
   if (!isTauri()) {
     throw new Error('Local music import is available in the desktop or Android app.');
   }
 
-  return isAndroidApp() ? importAndroidAudioFiles() : scanDesktopFolder();
+  if (isAndroidApp()) return importAndroidAudioFiles();
+  if (!selectDesktopFolder) throw new Error('A desktop folder picker is required.');
+  return scanDesktopFolder(selectDesktopFolder);
 }
 
-async function scanDesktopFolder(): Promise<LibraryImportResult | null> {
-  const selected = await open({
-    title: 'Choose a music folder',
-    directory: true,
-    multiple: false,
-    recursive: true,
-  });
-  if (typeof selected !== 'string') return null;
+async function scanDesktopFolder(selectFolder: DesktopFolderSelector): Promise<LibraryImportResult | null> {
+  const selected = await selectFolder();
+  if (!selected) return null;
 
   const paths = await audioService.scanFolder(selected);
 

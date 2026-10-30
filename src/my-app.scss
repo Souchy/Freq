@@ -26,7 +26,8 @@
   --placeholder: #6b756e;
   --artwork-bg: #232b27;
   --glow: rgb(216 243 106 / 7%);
-  --dock-clearance: 78px;
+  --scrollbar: #647068;
+  --dock-clearance: 94px;
 }
 
 :root[data-theme="light"] {
@@ -57,7 +58,7 @@
   --artwork-bg: #e3e7d9;
   --glow: rgb(216 243 106 / 32%);
   --scrollbar: #c5cbbf;
-  --dock-clearance: 78px;
+  --dock-clearance: 94px;
 }
 
 * {
@@ -220,7 +221,7 @@ nav.app-nav .theme-toggle:focus-visible {
   }
 
   .app-main {
-    --dock-clearance: 68px;
+    --dock-clearance: 84px;
 
     padding: 8px 14px var(--dock-clearance);
   }
