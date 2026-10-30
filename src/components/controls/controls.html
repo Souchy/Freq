@@ -1,14 +1,14 @@
 <template>
-  <require from="./controls.css"></require>
-  <div class="controls card">
-    <div class="left">
-      <button click.trigger="prev()">⟸</button>
+  <section class="controls" aria-label="Playback controls">
+    <div class="transport">
+      <button type="button" click.trigger="prev()" aria-label="Restart current track" title="Restart current track">⏮</button>
+      <button class="play-button" type="button" click.trigger="togglePlay()" aria-label.bind="isPlaying ? 'Pause' : 'Play'" title.bind="isPlaying ? 'Pause' : 'Play'">${isPlaying ? 'Ⅱ' : '▶'}</button>
+      <button type="button" click.trigger="next()" aria-label="Next track" title="Next track">⏭</button>
     </div>
-    <div class="center">
-      <button class="big" click.trigger="togglePlay()">${isPlaying ? '⏸' : '⏵'}</button>
-    </div>
-    <div class="right">
-      <button click.trigger="next()">⟹</button>
-    </div>
-  </div>
+    <label class="volume-control">
+      <span aria-hidden="true">VOL</span>
+      <span class="visually-hidden">Volume</span>
+      <input type="range" min="0" max="1" step="0.01" value.bind="volume" input.trigger="onVolumeChange($event)" aria-label="Volume">
+    </label>
+  </section>
 </template>

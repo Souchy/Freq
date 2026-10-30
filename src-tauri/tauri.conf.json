@@ -12,15 +12,17 @@
   "app": {
     "windows": [
       {
-        "title": "freq",
-        "width": 300,
-        "height": 500,
+        "title": "Freq",
+        "width": 1180,
+        "height": 820,
+        "minWidth": 360,
+        "minHeight": 560,
         "fullscreen": false,
         "resizable": true
       }
     ],
     "security": {
-      "csp": "default-src 'self'; img-src 'self' asset: http://asset.localhost",
+      "csp": "default-src 'self'; img-src 'self' asset: http://asset.localhost https://i.ytimg.com https://img.youtube.com",
       "assetProtocol": {
         "enable": true,
         "scope": [

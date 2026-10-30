@@ -1,65 +1,98 @@
 import { ILogger, resolve } from "aurelia";
 import { commands_yt } from "../../generated/specta/commands/yt";
 import { SearchResultVideo } from "../../generated/specta/types";
+import "./DownloadPage.scss";
 
-// export type DownloadableSearchResultVideo = SearchResultVideo | SearchResultVideo & {
-// 	promise: Promise<void> | null
-// 	downloaded: boolean
-// };
-
-export type DownloadStatus = {
-	promise: Promise<void> | null
-	downloaded: boolean
-};
+type DownloadStatus = "downloading" | "downloaded" | "error";
 
 export class DownloadPage {
 	private readonly logger = resolve(ILogger).scopeTo("DownloadPage");
 
-	public urlInput: string = "";
 	public searchInput: string = "";
 	public message = "";
-
-	// private promise: Promise<void> | null = null;
-
+	public isSearching = false;
+	public hasSearched = false;
 	public playlist: SearchResultVideo[] = [];
 	public downloaded: Record<string, DownloadStatus> = {};
 
 	public async clickDownload(url: string) {
-		this.message = "Click download url: " + url;
-		this.logger.debug("Click download url: ", url);
+		this.downloaded = { ...this.downloaded, [url]: "downloading" };
+		this.message = "Saving audio...";
 
-		const promise = commands_yt.dlYt(url, {
-			output_dir: "C:/Robyn/Git/apps/Freq/output/",
-			audio_codec: 0,
-			audio_quality: 0
-		}).then(result => {
-			this.logger.debug("Dl result: ", result);
-			if (result.status == "error") {
-				this.message = "Error: " + result.error;
-				// this.downloaded.set(url, { promise: null, downloaded: false });
-				this.downloaded[url] = { promise: null, downloaded: false };
-			} else {
-				this.message = "Succeeded: " + result.data;
-				// this.downloaded.set(url, { promise: null, downloaded: true });
-				this.downloaded[url] = { promise: null, downloaded: true };
+		try {
+			const result = await commands_yt.dlYt(url, {
+				output_dir: "",
+				audio_codec: 0,
+				audio_quality: 0
+			});
+
+			if (result.status === "error") {
+				this.logger.error("Audio download failed", result.error);
+				this.downloaded = { ...this.downloaded, [url]: "error" };
+				this.message = `Download failed: ${result.error}`;
+				return;
 			}
-		});
 
-		// this.downloaded.set(url, { promise: promise, downloaded: false });
-		this.downloaded[url] = { promise: promise, downloaded: false };
-	}
-
-	public async clickSearch(search: string) {
-		this.playlist = [];
-		let result = await commands_yt.ytSearch(search, 0, 100);
-
-		this.logger.debug("Dl result: ", result);
-		if (result.status == "error") {
-			this.message = "Error: " + result.error;
-		} else {
-			this.message = ""; // this.message = "Succeeded: " + result.data.length;
-			this.playlist = result.data;
+			this.downloaded = { ...this.downloaded, [url]: "downloaded" };
+			this.message = `Saved to ${result.data}`;
+		} catch (error) {
+			this.logger.error("Audio download failed", error);
+			this.downloaded = { ...this.downloaded, [url]: "error" };
+			this.message = `Download failed: ${String(error)}`;
 		}
 	}
 
+	public async submitSearch(event: SubmitEvent) {
+		event.preventDefault();
+		const query = this.searchInput.trim();
+		if (!query || this.isSearching) return;
+
+		if (this.isYoutubeUrl(query)) {
+			await this.clickDownload(query);
+			return;
+		}
+
+		this.isSearching = true;
+		this.hasSearched = true;
+		this.playlist = [];
+		this.message = "Searching YouTube...";
+
+		try {
+			const result = await commands_yt.ytSearch(query, 0, 30);
+			if (result.status === "error") {
+				this.logger.error("YouTube search failed", result.error);
+				this.message = `Search failed: ${result.error}`;
+				return;
+			}
+
+			this.message = "";
+			this.playlist = result.data.filter(video => video.duration !== null);
+		} catch (error) {
+			this.logger.error("YouTube search failed", error);
+			this.message = `Search failed: ${String(error)}`;
+		} finally {
+			this.isSearching = false;
+		}
+	}
+
+	public formatDuration(duration: number | null): string {
+		if (duration === null || !Number.isFinite(duration)) return "";
+		const totalSeconds = Math.floor(duration);
+		const minutes = Math.floor(totalSeconds / 60);
+		const seconds = String(totalSeconds % 60).padStart(2, "0");
+		return `${minutes}:${seconds}`;
+	}
+
+	public thumbnailUrl(video: SearchResultVideo): string {
+		return video.thumbnail_url ?? `https://i.ytimg.com/vi/${video.id}/hqdefault.jpg`;
+	}
+
+	private isYoutubeUrl(value: string): boolean {
+		try {
+			const hostname = new URL(value).hostname.replace(/^www\./, "");
+			return hostname === "youtube.com" || hostname === "youtu.be" || hostname === "m.youtube.com";
+		} catch {
+			return false;
+		}
+	}
 }

@@ -1,9 +1,15 @@
 <template>
-  <require from="./queue.css"></require>
-  <div class="queue card">
-    <h3>Queue</h3>
+  <section class="queue" aria-labelledby="queue-title">
+    <header class="queue-heading">
+      <h2 id="queue-title">Up next</h2>
+      <span>${items.length} ${items.length === 1 ? 'track' : 'tracks'}</span>
+    </header>
     <ul>
-      <li repeat.for="item of items">${item.name} <button click.trigger="remove(item)">✕</button></li>
+      <li repeat.for="item of items">
+        <span class="queue-track-name" title.bind="item.name">${item.name}</span>
+        <button class="queue-remove" type="button" click.trigger="remove(item)" disabled.bind="isPlaying && $index === 0" title="Remove from queue" aria-label="Remove from queue">×</button>
+      </li>
     </ul>
-  </div>
+    <p class="queue-empty" if.bind="!items.length">Add a track from your collection.</p>
+  </section>
 </template>

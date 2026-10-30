@@ -1,17 +1,21 @@
 <template>
-  <require from="./now-playing.css"></require>
-  <div class="now-playing card">
+  <section class="now-playing" aria-label="Now playing">
     <div class="artwork">
-      <img src.bind="artwork || '/assets/cover-placeholder.png'" alt="Artwork" />
+      <img if.bind="artwork" src.bind="artwork" alt="Album artwork">
+      <div class="artwork-placeholder" if.bind="!artwork" aria-hidden="true">
+        <span class="artwork-mark">FREQ / 01</span>
+        <div class="artwork-bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <span class="artwork-caption">LOCAL SOUND</span>
+      </div>
     </div>
     <div class="meta">
-      <div class="title">${title || 'Not Playing'}</div>
-      <div class="artist">${artist || ''}</div>
+      <div class="title" title.bind="title">${title || 'Choose a track'}</div>
+      <div class="artist">${artist || (title ? 'Local audio' : 'Select something from your collection')}</div>
       <div class="progress">
         <span class="time">${formatTime(position)}</span>
-        <input type="range" min="0" max.bind="duration || 0" value.bind="position" input.trigger="onSeek($event)" />
+        <input type="range" min="0" max.bind="duration || 0" value.bind="position" input.trigger="onSeek($event)" aria-label="Playback position" disabled.bind="!duration">
         <span class="time">${formatTime(duration)}</span>
       </div>
     </div>
-  </div>
+  </section>
 </template>

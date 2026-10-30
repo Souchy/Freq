@@ -1,35 +1,29 @@
 import { route } from '@aurelia/router';
 import { PlayerPage } from './pages/player-page/player-page';
-import { BrowsePage } from './pages/browse-page/browse-page';
 import { SettingsPage } from './pages/settings-page/settings-page';
 
 @route({
   routes: [
     {
-      path: ['', 'player'],
+      path: ['', 'library', 'browse', 'player'],
       component: PlayerPage,
-      title: 'Player',
+      title: 'Library',
     },
     {
-      path: 'browse',
-      component: BrowsePage,
-      title: 'Browse',
+      path: ['youtube', 'downloader'],
+      component: import('./pages/download-page/DownloadPage'),
+      title: 'YouTube',
     },
     {
       path: 'settings',
       component: SettingsPage,
       title: 'Settings',
     },
-    {
-      path: 'downloader',
-      component: import('./pages/download-page/DownloadPage'),
-      title: 'Downloader',
-    },
   ],
   fallback: {
-      path: '',
-      component: PlayerPage,
-      title: 'Player',
+    path: '',
+    component: PlayerPage,
+    title: 'Library',
   },
 })
 export class MyApp {

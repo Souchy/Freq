@@ -1,30 +1,57 @@
-<input value.bind="urlInput" placeholder="Download url..." disabled.bind="isLoading" />
-<button click.trigger="clickDownload(urlInput)">Download</button>
+<div class="download-page">
+  <header class="topbar">
+    <div class="wordmark">freq<span>.</span></div>
+    <div class="topbar-meta"><span class="status-dot"></span> SOUND LIBRARY</div>
+  </header>
 
-<input value.bind="searchInput" placeholder="Search youtube..." />
-<button click.trigger="clickSearch(searchInput)" disabled.bind="isLoading">Search</button>
+  <main class="content">
+    <section class="search-section" aria-labelledby="page-title">
+      <p class="eyebrow">YOUTUBE / AUDIO</p>
+      <h1 id="page-title">Find your next<br class="mobile-break"> favorite.</h1>
+      <form class="search-form" submit.trigger="submitSearch($event)">
+        <label class="visually-hidden" for="track-search">Search YouTube or paste a video link</label>
+        <input id="track-search" type="search" value.bind="searchInput" placeholder="Track, artist, or YouTube link" autocomplete="off">
+        <button type="submit" disabled.bind="isSearching || !searchInput.trim()">
+          <span if.bind="!isSearching">Search</span>
+          <span if.bind="isSearching" class="button-loader" aria-label="Searching"></span>
+        </button>
+      </form>
+      <p class="search-note">Search tracks or paste a YouTube link to save audio.</p>
+    </section>
 
-<p>${message}</p>
+    <section class="results-section" aria-live="polite" aria-busy.bind="isSearching">
+      <div class="results-heading" if.bind="playlist.length">
+        <h2>Search results</h2>
+        <span>${playlist.length} tracks</span>
+      </div>
 
-<yt-video repeat.for="video of playlist" video.bind="video" vm.bind="this" if.bind="video.duration"></yt-video>
+      <p class="feedback" if.bind="message" role="status">${message}</p>
 
-<template as-custom-element="yt-video">
-  <bindable name="video"></bindable>
-  <bindable name="vm"></bindable>
-  <!-- <img src.bind="video.thumbnail_url" /> -->
-  <div class="thumbnail_with_duration">
-    <img class="thumbnail" src="http://img.youtube.com/vi/${video.id}/maxresdefault.jpg" />
-    <div class="duration">${video.duration}s</div>
-  </div>
-  <div class="info">
-    <div class="title">${video.title}</div>
-    <div class="uploader">${video.uploader}</div>
-    <div>
-      <button if.bind="!vm.downloaded[video.url]" click.trigger="vm.clickDownload(video.url)">Download</button>
-      <span if.bind="vm.downloaded[video.url] && !!vm.downloaded[video.url].promise">Loading</span>
-      <span if.bind="vm.downloaded[video.url] && vm.downloaded[video.url].promise == null && vm.downloaded[video.url].downloaded">Download succeeded</span>
-      <span if.bind="vm.downloaded[video.url] && vm.downloaded[video.url].promise == null && !vm.downloaded[video.url].downloaded">Download failed</span>
-    </div>
-  </div>
-  <!-- <iframe width="128" height="128" src.bind="video.url"></iframe> -->
-</template>
+      <div class="empty-state" if.bind="!playlist.length && !message && !hasSearched">
+        <span class="equalizer" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+        <p>What are we listening for?</p>
+      </div>
+      <p class="empty-state no-results" if.bind="hasSearched && !isSearching && !playlist.length && !message">No tracks found. Try another search.</p>
+
+      <div class="track-list" if.bind="playlist.length">
+        <article class="track-row" repeat.for="video of playlist">
+          <div class="artwork">
+            <img src.bind="thumbnailUrl(video)" alt="" loading="lazy">
+            <span class="duration" if.bind="video.duration !== null">${formatDuration(video.duration)}</span>
+          </div>
+          <div class="track-copy">
+            <h3 title.bind="video.title">${video.title}</h3>
+            <p>${video.uploader || 'YouTube'}<span if.bind="video.duration !== null"> · ${formatDuration(video.duration)}</span></p>
+          </div>
+          <button class="download-button" class.bind="downloaded[video.url] === 'downloaded' ? 'download-button is-saved' : 'download-button'" type="button" click.trigger="clickDownload(video.url)" disabled.bind="downloaded[video.url] === 'downloading' || downloaded[video.url] === 'downloaded'">
+            <span if.bind="!downloaded[video.url] || downloaded[video.url] === 'error'">Save MP3</span>
+            <span if.bind="downloaded[video.url] === 'downloading'">Saving</span>
+            <span if.bind="downloaded[video.url] === 'downloaded'">Saved</span>
+          </button>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer"><span>FREQ</span><span>Make room for good sound.</span></footer>
+</div>

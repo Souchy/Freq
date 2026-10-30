@@ -1,11 +1,11 @@
 <require from="./my-app.scss"></require>
+<require from="./components/player-dock/player-dock"></require>
 
-<nav class="app-nav">
-  <div class="brand">Freq</div>
+<nav class="app-nav" aria-label="Main navigation">
+  <div class="brand">freq<span>.</span></div>
   <div class="links">
-    <a href="player">Player</a>
-    <a href="browse">Browse</a>
-    <a href="downloader">Downloader</a>
+    <a href="library">Library</a>
+    <a href="youtube">YouTube</a>
     <a href="settings">Settings</a>
   </div>
 </nav>
@@ -13,3 +13,5 @@
 <main class="app-main">
   <au-viewport></au-viewport>
 </main>
+
+<player-dock></player-dock>

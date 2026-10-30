@@ -1,5 +1,4 @@
 import { audioService } from './audio';
-import { playlistService } from './playlist';
 
 class PlayerController {
   private queue: Array<{ path: string; name: string }> = [];
@@ -9,19 +8,24 @@ class PlayerController {
     // listen for UI events
     document.addEventListener('controls:play', () => this.play());
     document.addEventListener('controls:pause', () => this.pause());
+    document.addEventListener('controls:resume', () => this.resume());
     document.addEventListener('controls:next', () => this.next());
     document.addEventListener('controls:prev', () => this.prev());
     document.addEventListener('queue:add', (e: Event) => this.enqueue((e as CustomEvent).detail));
+    document.addEventListener('queue:remove', (e: Event) => this.removeFromQueue((e as CustomEvent).detail));
     document.addEventListener('seek', (e: Event) => this.seek((e as CustomEvent).detail));
 
-    // sync playlist service
-    playlistService.addEventListener('change', (e: Event) => { /* no-op for now */ });
   }
 
   enqueue(item: { path: string; name: string }) {
     this.queue.push(item);
     this.emitQueue();
     if (!this.isPlaying) this.play();
+  }
+
+  removeFromQueue(path: string) {
+    this.queue = this.queue.filter(item => item.path !== path);
+    this.emitQueue();
   }
 
   emitQueue() {
@@ -36,8 +40,15 @@ class PlayerController {
       this.isPlaying = true;
       this.emitState();
       // emit metadata
-      const md = await audioService.getMetadata(item.path).catch(() => null);
-      document.dispatchEvent(new CustomEvent('player:metadata', { detail: md }));
+      const metadata = await audioService.getMetadata(item.path).catch(() => null);
+      document.dispatchEvent(new CustomEvent('player:metadata', {
+        detail: {
+          title: item.name.replace(/\.[^.]+$/, ''),
+          artist: metadata?.artist ?? null,
+          album: metadata?.album ?? null,
+          duration_seconds: metadata?.duration_seconds ?? null,
+        },
+      }));
       // TODO: monitor position and emit 'player:position' periodically
     } catch (err) {
       console.error('play failed', err);

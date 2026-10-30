@@ -1,4 +1,5 @@
 import { player_commands } from '../generated/specta/commands/player_commands';
+import { library_commands } from '../generated/specta/commands/library_commands';
 // import { invoke } from '@tauri-apps/api/tauri';
 
 export enum PlaybackState {
@@ -72,13 +73,13 @@ class AudioService extends EventTarget {
 	}
 
 	async scanFolder(path: string) {
-		const res = await player_commands.scanFolder(path);
+		const res = await library_commands.scanFolder(path);
 		if (res.status === 'ok') return res.data;
 		throw new Error(typeof res.error === 'string' ? res.error : JSON.stringify(res.error));
 	}
 
 	async getMetadata(path: string) {
-		const res = await player_commands.getMetadata(path);
+		const res = await library_commands.getMetadata(path);
 		if (res.status === 'ok') return res.data;
 		throw new Error(typeof res.error === 'string' ? res.error : JSON.stringify(res.error));
 	}

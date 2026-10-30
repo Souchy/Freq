@@ -8,10 +8,7 @@ import { DefaultVirtualizationConfiguration } from '@aurelia/ui-virtualization';
 import './core/player-controller';
 import { PlayerPage } from './pages/player-page/player-page';
 import { SettingsPage } from './pages/settings-page/settings-page';
-import { Controls } from './components/controls/controls';
 import { Library } from './components/library/library';
-import { NowPlaying } from './components/now-playing/now-playing';
-import { Player } from './components/player/player';
 import { Queue } from './components/queue/queue';
 
 async function startApp() {
@@ -74,7 +71,7 @@ async function startApp() {
   
   // Components
   au.register(PlayerPage, SettingsPage);
-  au.register(Controls, Library, NowPlaying, Player, Queue);
+  au.register(Library, Queue);
 
   await au.app(MyApp).start();
 }

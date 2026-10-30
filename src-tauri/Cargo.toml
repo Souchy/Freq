@@ -7,7 +7,7 @@ license = ""
 repository = ""
 default-run = "app"
 edition = "2021"
-rust-version = "1.77.2"
+rust-version = "1.90"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -27,6 +27,8 @@ tauri = { version = "2.9.5", features = ["protocol-asset"] }
 tauri-plugin = { version = "2.5.3" }
 tauri-plugin-opener = "2"
 tauri-plugin-shell = "2.0.0"
+tauri-plugin-dialog = "2"
+tauri-plugin-fs = "2"
 
 # Serde
 serde_json = "1.0"

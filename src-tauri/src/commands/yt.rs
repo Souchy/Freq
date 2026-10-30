@@ -1,7 +1,7 @@
-use std::{path::PathBuf, process::Command, str::FromStr};
+use std::{path::PathBuf, process::Command};
 
 use serde::{Deserialize, Serialize};
-use tauri::State;
+use tauri::{Manager, State};
 use yt_dlp::{
     extractor::{ExtractorBase, VideoExtractor},
     model::{playlist::PlaylistEntry, AudioCodecPreference, AudioQuality},
@@ -124,14 +124,16 @@ pub async fn dl_yt(
     url: String,
     opts: DlOptions,
     downloader: State<'_, Downloader>,
+    app: tauri::AppHandle,
 ) -> Result<String, String> {
-    priv_dl(url, opts, downloader.inner()).await
+    priv_dl(url, opts, downloader.inner(), &app).await
 }
 
 pub async fn priv_dl(
     url: String,
     opts: DlOptions,
     downloader: &Downloader,
+    app: &tauri::AppHandle,
 ) -> Result<String, String> {
     println!("Dl infos for video at url: {}", url);
 
@@ -140,15 +142,41 @@ pub async fn priv_dl(
         .await
         .map_err(|e| e.to_string())?;
 
-    let path_str = format!("{}/{}.mp3", opts.output_dir, video.title);
+    let output_dir = if opts.output_dir.trim().is_empty() {
+        app.path()
+            .download_dir()
+            .or_else(|_| app.path().app_local_data_dir())
+            .map_err(|error| error.to_string())?
+    } else {
+        PathBuf::from(opts.output_dir)
+    };
+    std::fs::create_dir_all(&output_dir).map_err(|error| error.to_string())?;
 
-    // log::info!("");
-    println!("Dl to path: {}", path_str);
+    let safe_title: String = video
+        .title
+        .chars()
+        .map(|character| {
+            if matches!(character, '<' | '>' | ':' | '"' | '/' | '\\' | '|' | '?' | '*') {
+                '_'
+            } else {
+                character
+            }
+        })
+        .collect();
+    let safe_title = safe_title.trim();
+    let filename = if safe_title.is_empty() {
+        "youtube-audio.mp3".to_string()
+    } else {
+        format!("{safe_title}.mp3")
+    };
+    let output_path = output_dir.join(filename);
+
+    println!("Dl to path: {}", output_path.display());
 
     let path = downloader
         .download_audio_stream_with_quality_to_path(
             &video,
-            PathBuf::from(path_str),
+            output_path,
             AudioQuality::Best,
             AudioCodecPreference::MP3,
         )

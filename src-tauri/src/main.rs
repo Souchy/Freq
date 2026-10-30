@@ -22,6 +22,8 @@ fn main() {
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_fs::init())
         .invoke_handler(specta_builder.invoke_handler())
         .setup(move |app: &mut tauri::App| {
             // Setup specta and generate bindings
@@ -67,10 +69,10 @@ fn build_specta() -> souchy_tauri_specta::Builder {
             player_commands::stop,
             commands::yt::dl_yt,
             commands::yt::yt_search,
-            commands::yt::get_video_recommendations
+            commands::yt::get_video_recommendations,
             player_commands::set_volume,
-            player_commands::scan_folder,
-            player_commands::get_metadata,
+            commands::library_commands::scan_folder,
+            commands::library_commands::get_metadata,
             player_commands::seek,
             player_commands::get_position,
             player_commands::get_duration,

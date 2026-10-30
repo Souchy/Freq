@@ -1,19 +1,40 @@
 <template>
-  <require from="./library.css"></require>
-  <require from="./filter-value-converter"></require>
-  <div class="library card">
-    <div class="search">
-      <input placeholder="Filter library" value.bind="filter" input.trigger="onFilter($event)" />
-    </div>
-    <ul>
-      <li repeat.for="item of items | filter:filterTrack">
-        <div class="row">
-          <div class="name">${item.name}</div>
-          <div class="actions">
-            <button click.trigger="addToQueue(item)">＋</button>
+  <section class="library" aria-labelledby="library-title">
+    <header class="library-heading">
+      <div>
+        <h2 id="library-title">Your collection</h2>
+        <p>${items.length} ${items.length === 1 ? 'track' : 'tracks'} on this device</p>
+      </div>
+      <button class="scan-button" type="button" click.trigger="addMusic()" disabled.bind="isScanning">
+        ${isScanning ? 'Adding...' : isAndroid ? '＋ Import audio' : '＋ Add folder'}
+      </button>
+    </header>
+
+    <label class="library-search">
+      <span class="search-mark" aria-hidden="true">⌕</span>
+      <span class="visually-hidden">Filter your collection</span>
+      <input type="search" placeholder="Filter by track or file path" value.bind="filter" autocomplete="off">
+    </label>
+
+    <p class="library-message" if.bind="message" role="status">${message}</p>
+
+    <div class="track-list" if.bind="filteredItems.length">
+      <ul>
+        <li class="track-row" repeat.for="item of filteredItems">
+          <span class="track-index">${formatIndex($index)}</span>
+          <div class="track-meta">
+            <div class="track-name" title.bind="item.name">${item.name}</div>
+            <div class="track-path" title.bind="item.path">${item.path}</div>
           </div>
-        </div>
-      </li>
-    </ul>
-  </div>
+          <button class="add-track" type="button" click.trigger="addToQueue(item)" title="Add to queue" aria-label="Add to queue">+</button>
+        </li>
+      </ul>
+    </div>
+
+    <div class="library-empty" if.bind="!items.length && !message">
+      <strong>Your library starts here.</strong>
+      <span>${isAndroid ? 'Import audio files stored on this device.' : 'Add a folder of audio files to browse and play your collection.'}</span>
+    </div>
+    <p class="library-empty" if.bind="items.length && !filteredItems.length && !message">No tracks match that filter.</p>
+  </section>
 </template>

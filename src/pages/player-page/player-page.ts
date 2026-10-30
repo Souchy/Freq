@@ -1,3 +1,7 @@
-import '../../components/player/player';
+export class PlayerPage {
+	public activeView: 'library' | 'queue' = 'library';
 
-export class PlayerPage {}
+	public setView(view: 'library' | 'queue') {
+		this.activeView = view;
+	}
+}
